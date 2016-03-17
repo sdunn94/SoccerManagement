@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Soccer Management</string>
+    <string name="profile_button">Profiles</string>
+    <string name="practice_button">Practice</string>
+    <string name="players_textView">Players</string>
+    <string name="new_player_profile_button">New Profile</string>
+    <string name="profile_info_nameTV">Name: </string>
+    <string name="profile_info_yearTV">Year: </string>
+    <string name="profile_info_positionTV">Position: </string>
+    <string name="profile_submit">Submit</string>
+    <string name="profile_info_presentTV">Present: </string>
+    <string name="profile_info_pictureTV">Picture: </string>
+    <string name="profile_take_pic_button">Take Picture</string>
+
+    <string-array name="years">
+        <item>Freshman</item>
+        <item>Sophomore</item>
+        <item>Junior</item>
+        <item>Senior</item>
+    </string-array>
+</resources>
