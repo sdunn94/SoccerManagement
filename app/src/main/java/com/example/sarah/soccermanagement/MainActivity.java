@@ -9,7 +9,8 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     Button profileButton;
-//    Button practiceButton;
+    Button practiceButton;
+    Button hyperlinksButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         profileButton = (Button) findViewById(R.id.profileButton);
-//        practiceButton = (Button) findViewById(R.id.practiceButton);
-//        practiceButton.setOnClickListener(goToPracticeField);
+        practiceButton = (Button) findViewById(R.id.practiceButton);
+        hyperlinksButton = (Button) findViewById(R.id.hyperlinksButton);
+        practiceButton.setOnClickListener(goToPracticeField);
         profileButton.setOnClickListener(goToProfileActivity);
-
+        hyperlinksButton.setOnClickListener(goToHyperlinks);
 
     }
 
@@ -34,13 +36,21 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-//    public View.OnClickListener goToPracticeField = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//
-//            Intent intent = new Intent(MainActivity.this, PracticeFieldActivity.class);
-//
-//            startActivity(intent);
-//        }
-//    };
+    public View.OnClickListener goToPracticeField = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, PracticeFieldActivity.class);
+
+            startActivity(intent);
+        }
+    };
+
+    public View.OnClickListener goToHyperlinks = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, HyperlinksActivity.class);
+
+            startActivity(intent);
+        }
+    };
 }

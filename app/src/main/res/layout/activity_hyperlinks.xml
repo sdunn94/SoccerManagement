@@ -7,8 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.sarah.soccermanagement.MainActivity">
-
+    tools:context="com.example.sarah.soccermanagement.HyperlinksActivity">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -19,28 +18,37 @@
         android:src="@drawable/shieldc"
         android:alpha="0.4"/>
 
-    <Button
+    <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profile_button"
-        android:id="@+id/profileButton"
-        android:layout_above="@+id/practiceButton"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/link1_title"
+        android:textStyle="bold"/>
 
-    <Button
+    <TextView
+        android:id="@+id/text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/practice_button"
-        android:id="@+id/practiceButton"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"/>
+        android:text="@string/link1"
+        android:layout_below="@+id/text"
+        android:paddingTop="5dp"
+        android:autoLink="web"/>
 
-    <Button
+    <TextView
+        android:id="@+id/text3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/hyperlinksButton"
-        android:text="@string/hyper_link_button"
-        android:layout_below="@+id/practiceButton"
-        android:layout_centerHorizontal="true" />
+        android:text="@string/link2_title"
+        android:layout_below="@+id/text2"
+        android:paddingTop="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/link2"
+        android:layout_below="@+id/text3"
+        android:paddingTop="5dp"
+        android:autoLink="web"/>
 
 </RelativeLayout>

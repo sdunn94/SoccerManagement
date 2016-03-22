@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class PlayerLists {
 
-    static ArrayList<Player> allPlayers = new ArrayList<Player>();
-    static ArrayList<Player> inPlayPlayers = new ArrayList<Player>();
+    static ArrayList<Player> allPlayers = new ArrayList<>();
+    //static ArrayList<Player> inPlayPlayers = new ArrayList<Player>();
 
     public PlayerLists() {
 

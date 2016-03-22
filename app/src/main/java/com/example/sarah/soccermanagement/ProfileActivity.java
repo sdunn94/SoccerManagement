@@ -1,29 +1,29 @@
 package com.example.sarah.soccermanagement;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.firebase.ui.FirebaseRecyclerAdapter;
+import com.firebase.ui.FirebaseListAdapter;
+
 
 public class ProfileActivity extends AppCompatActivity {
 
     Button newProfileButton;
     Button backToMenuButton;
-    RecyclerView players;
-
-    private Firebase ref;
-    FirebaseRecyclerAdapter adapter;
+    ListView players;
+    //private static final String TAG = "MyActivity";
+    FirebaseListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,39 +32,40 @@ public class ProfileActivity extends AppCompatActivity {
 
         newProfileButton = (Button) findViewById(R.id.newProfileButton);
         backToMenuButton = (Button) findViewById(R.id.backToMenuButton);
-        players = (RecyclerView) findViewById(R.id.playersRecyclerView);
-        players.setHasFixedSize(true);
-        players.setLayoutManager(new LinearLayoutManager(this));
+        players = (ListView) findViewById(R.id.playersRecyclerView);
+        players.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Log.d(TAG, "onClick " + ((TextView) view.findViewById(R.id.playerNameTextView)).getText().toString());
+                Intent intent = new Intent(ProfileActivity.this, NewProfileForm.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("name", ((TextView) view.findViewById(R.id.playerNameTextView)).getText().toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
         newProfileButton.setOnClickListener(startNewProfile);
         backToMenuButton.setOnClickListener(backToMenu);
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
 
-        adapter = new FirebaseRecyclerAdapter<Player, MyViewHolder>(Player.class, R.layout.player_profile_row_layout, MyViewHolder.class, ref) {
+        adapter = new FirebaseListAdapter<Player>(this, Player.class, R.layout.player_profile_row_layout, ref) {
 
             @Override
-            protected void populateViewHolder(MyViewHolder messageViewHolder, Player player, int i) {
-                messageViewHolder.tv.setText(player.getFirstName());
-                messageViewHolder.iv.setImageResource(player.getPicResourceId());
+            protected void populateView(View view, Player player, int i) {
+                String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();
+                ((TextView)view.findViewById(R.id.playerNameTextView)).setText(name);
+                byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
+                Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
+                ((ImageView) view.findViewById(R.id.playerImageView)).setImageBitmap(bMap);
+                PlayerLists.allPlayers.add(player);
             }
         };
 
         players.setAdapter(adapter);
-    }
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tv;
-        ImageView iv;
-        public MyViewHolder(View v)
-        {
-            super(v);
-            tv = (TextView) v.findViewById(R.id.playerNameTextView);
-            iv = (ImageView) v.findViewById(R.id.playerImageView);
-        }
     }
 
     public View.OnClickListener startNewProfile = new View.OnClickListener() {

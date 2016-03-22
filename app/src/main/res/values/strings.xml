@@ -11,6 +11,20 @@
     <string name="profile_info_presentTV">Present: </string>
     <string name="profile_info_pictureTV">Picture: </string>
     <string name="profile_take_pic_button">Take Picture</string>
+    <string name="profile_first_name_hint">First Name</string>
+    <string name="profile_heightFeet_hint">Height (Feet)</string>
+    <string name="profile_heightInches_hint">Height (Inches)</string>
+    <string name="profile_weight_hint">Weight</string>
+    <string name="profile_hometown_hint">Hometown</string>
+    <string name="profile_highSchool_hint">High School</string>
+    <string name="profile_club_hint">Club</string>
+    <string name="profile_lastName_hint">Last Name</string>
+    <string name="hyper_link_button">External Links</string>
+    <string name="link1_title">Carthage College Men\'s Soccer Roster</string>
+    <string name="link2_title">Inside Soccer</string>
+    <string name="link1">http://athletics.carthage.edu/roster.aspx?path=msoc</string>
+    <string name="link2">http://www.insidesoccer.com/</string>
+    <string name="upload_image_button">Upload Image</string>
 
     <string-array name="years">
         <item>Freshman</item>
