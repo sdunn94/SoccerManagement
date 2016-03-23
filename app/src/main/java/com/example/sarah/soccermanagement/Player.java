@@ -18,6 +18,8 @@ public class Player {
     private String highSchool;
     private String club;
     private String image;
+    private Float xPos;
+    private Float yPos;
 
     public Player(){}
 
@@ -32,6 +34,24 @@ public class Player {
         this.hometown = hometown;
         this.highSchool = highSchool;
         this.club = club;
+        this.xPos = null;
+        this.yPos = null;
+    }
+
+    public Float getxPos() {
+        return xPos;
+    }
+
+    public void setxPos(Float xPos) {
+        this.xPos = xPos;
+    }
+
+    public Float getyPos() {
+        return yPos;
+    }
+
+    public void setyPos(Float yPos) {
+        this.yPos = yPos;
     }
 
     public String getLastName() { return lastName; }

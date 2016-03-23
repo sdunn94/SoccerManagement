@@ -51,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
         Firebase.setAndroidContext(this);
 
         Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        PlayerLists.allPlayers.clear();
 
         adapter = new FirebaseListAdapter<Player>(this, Player.class, R.layout.player_profile_row_layout, ref) {
 
