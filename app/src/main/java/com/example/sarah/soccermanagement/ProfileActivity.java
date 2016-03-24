@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -22,7 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     Button newProfileButton;
     Button backToMenuButton;
     ListView players;
-    //private static final String TAG = "MyActivity";
+    private static final String TAG = "MyActivity";
     FirebaseListAdapter adapter;
 
     @Override
@@ -57,6 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             protected void populateView(View view, Player player, int i) {
+                Log.d(TAG, "Loading profile");
                 String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();
                 ((TextView)view.findViewById(R.id.playerNameTextView)).setText(name);
                 byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);

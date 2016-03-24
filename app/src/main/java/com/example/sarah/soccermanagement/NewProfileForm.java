@@ -113,7 +113,7 @@ public class NewProfileForm extends AppCompatActivity {
             float weight = Float.parseFloat(playerWeight.getText().toString());
             Player p = new Player(playerName.getText().toString(), playerLName.getText().toString(), playerYear.getSelectedItem().toString(), feet,
                     inches, weight, playerPosition.getText().toString(), playerHometown.getText().toString(), playerHighSchool.getText().toString(),
-                    playerClub.getText().toString());
+                    playerClub.getText().toString(), false);
             Bitmap image = ((BitmapDrawable) uploadedImage.getDrawable()).getBitmap();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);

@@ -3,6 +3,10 @@ package com.example.sarah.soccermanagement;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.firebase.client.DataSnapshot;
+
+import java.util.HashMap;
+
 /**
  * Created by Sarah on 3/7/2016.
  */
@@ -20,10 +24,11 @@ public class Player {
     private String image;
     private Float xPos;
     private Float yPos;
+    private boolean inPlay;
 
     public Player(){}
 
-    public Player(String firstName, String lastName, String year, int heightFeet, int heightInches, float weight, String position, String hometown, String highSchool, String club) {
+    public Player(String firstName, String lastName, String year, int heightFeet, int heightInches, float weight, String position, String hometown, String highSchool, String club, boolean inPlay) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.year = year;
@@ -36,6 +41,11 @@ public class Player {
         this.club = club;
         this.xPos = null;
         this.yPos = null;
+        this.inPlay = inPlay;
+    }
+
+    public boolean isInPlay() {
+        return inPlay;
     }
 
     public Float getxPos() {

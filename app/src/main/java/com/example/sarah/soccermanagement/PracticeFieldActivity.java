@@ -21,15 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.ui.FirebaseListAdapter;
+import com.firebase.client.FirebaseError;
 
 import java.util.ArrayList;
 
@@ -37,11 +38,13 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
     ListView players;
     RelativeLayout field;
+    ItemAdapter itemAdapter;
 
-    FirebaseListAdapter adapter;
-    ItemAdapter iAdapter;
-
+    Firebase ref;
+    private static final String TAG = "MyActivity";
     MyDragEventListener myDragEventListener = new MyDragEventListener();
+    ArrayList <Player> playerList = new ArrayList<>();
+    ArrayList<Player> inPlayPlayers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +58,69 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
 
-//        adapter = new FirebaseListAdapter<Player>(this, Player.class, R.layout.player_profile_row_layout, ref) {
-//
-//            @Override
-//            protected void populateView(View view, Player player, int i) {
-//                String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();
-//                ((TextView)view.findViewById(R.id.playerNameTextView)).setText(name);
-//                byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
-//                Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
-//                ((ImageView) view.findViewById(R.id.playerImageView)).setImageBitmap(bMap);
-//                PlayerLists.allPlayers.add(player);
-//            }
-//        };
+        ref.addChildEventListener(new ChildEventListener() {
 
-        iAdapter = new ItemAdapter(this, R.layout.player_profile_row_layout, PlayerLists.allPlayers);
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Player p = dataSnapshot.getValue(Player.class);
+                if(p.isInPlay()) {
+                    inPlayPlayers.add(p);
+                    generateImageViewForPlayer(p, p.getxPos(), p.getyPos());
+                }
+                else {
+                    playerList.add(p);
+                }
+                itemAdapter.notifyDataSetChanged();
+            }
 
-        players.setAdapter(iAdapter);
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Player p = dataSnapshot.getValue(Player.class);
+                if(p.isInPlay() && p.getxPos() != null && p.getyPos() != null) {
+                    inPlayPlayers.add(p);
+                    for(Player player : playerList) {
+                        if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                            playerList.remove(player);
+                            break;
+                        }
+                    }
+                    generateImageViewForPlayer(p, p.getxPos(), p.getyPos());
+                    itemAdapter.notifyDataSetChanged();
+                }
+                else if(!p.isInPlay()) {
+                    for(Player player : inPlayPlayers) {
+                        if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                            inPlayPlayers.remove(player);
+                            break;
+                        }
+                    }
+                    playerList.add(p);
+                    itemAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //N/A
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                //N/A
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        itemAdapter = new ItemAdapter(this, R.layout.player_profile_row_layout, playerList);
+
+        players.setAdapter(itemAdapter);
         players.setOnItemLongClickListener(listItemClickListener);
         players.setOnDragListener(myDragEventListener);
         field.setOnDragListener(myDragEventListener);
@@ -82,13 +130,18 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            ClipData.Item item = new ClipData.Item(PlayerLists.allPlayers.get(position).getFirstName() +
-                    " " + PlayerLists.allPlayers.get(position).getLastName());
+            LinearLayout linearLayoutParent = (LinearLayout) view;
+            TextView tv = (TextView) linearLayoutParent.getChildAt(1);
+            String text = tv.getText().toString();
+            int index1 = text.indexOf(',');
+            int index2 = text.indexOf('\n');
+            ClipData.Item item = new ClipData.Item(text.substring(index1 + 2, index2) +
+                    " " + text.substring(0, index1));
 
             String[] clipDescription = {ClipDescription.MIMETYPE_TEXT_PLAIN};
             ClipData dragData = new ClipData((CharSequence)view.getTag(), clipDescription,item);
             View.DragShadowBuilder myShadow = new MyDragShadowBuilder(view);
-            view.startDrag(dragData, myShadow, PlayerLists.allPlayers.get(position), 0);
+            view.startDrag(dragData, myShadow, null, 0);
 
             return true;
         }
@@ -127,35 +180,34 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
             switch(action) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    Log.d("ACTION_DRAG_STARTED", "start");
+                    Log.d(TAG, "start");
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    Log.d("ACTION_DRAG_ENTERED", "entered");
+                    Log.d(TAG, "entered");
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    Log.d("ACTION_DRAG_LOCATION", "location");
+                    Log.d(TAG, "location");
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    Log.d("ACTION_DRAG_EXITED", "exited");
+                    Log.d(TAG, "exited");
                     return true;
                 case DragEvent.ACTION_DROP:
-                    Log.d("ACTION_DROP", "drop");
+                    Log.d(TAG, "drop");
                     ClipData.Item item = event.getClipData().getItemAt(0);
 
                     String droppedItem = item.getText().toString();
                     int index = droppedItem.indexOf(" ");
                     String firstName = droppedItem.substring(0, index);
                     String lastName = droppedItem.substring(index + 1);
-                    for(int i = 0; i < PlayerLists.allPlayers.size(); i++) {
-                        if(PlayerLists.allPlayers.get(i).getFirstName().equals(firstName) && PlayerLists.allPlayers.get(i).getLastName().equals(lastName)) {
-                            generateImageViewForPlayer(PlayerLists.allPlayers.get(i), event.getX(), event.getY());
 
-                            PlayerLists.inPlayPlayers.add(PlayerLists.allPlayers.get(i));
-                            //also start timer for this player
-                            PlayerLists.allPlayers.remove(i);
-                            iAdapter.notifyDataSetChanged();
-                        }
-                    }
+                    Firebase player = ref.child("Player" + lastName + firstName).child("inPlay");
+                    player.setValue(true);
+                    player = ref.child("Player" + lastName + firstName).child("xPos");
+                    player.setValue(event.getX());
+                    player = ref.child("Player" + lastName + firstName).child("yPos");
+                    player.setValue(event.getY());
+
+
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     return true;
@@ -178,7 +230,14 @@ public class PracticeFieldActivity extends AppCompatActivity {
         newImageView.setImageBitmap(bMap);
         p.setxPos(x);
         p.setyPos(y);
+
+        Firebase player = ref.child("Player" + p.getLastName() + p.getFirstName()).child("xPos");
+        player.setValue(x);
+        player = ref.child("Player" + p.getLastName() + p.getFirstName()).child("yPos");
+        player.setValue(y);
+
         field.addView(newImageView);
+
     }
 
     public class ItemAdapter extends ArrayAdapter<Player> {
