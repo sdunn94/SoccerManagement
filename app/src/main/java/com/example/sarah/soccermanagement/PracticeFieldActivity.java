@@ -9,8 +9,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -32,6 +34,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class PracticeFieldActivity extends AppCompatActivity {
@@ -45,6 +48,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
     MyDragEventListener myDragEventListener = new MyDragEventListener();
     ArrayList <Player> playerList = new ArrayList<>();
     ArrayList<Player> inPlayPlayers = new ArrayList<>();
+    ArrayList<ImageView> images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,19 +83,55 @@ public class PracticeFieldActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Player p = dataSnapshot.getValue(Player.class);
                 if(p.isInPlay() && p.getxPos() != null && p.getyPos() != null) {
-                    inPlayPlayers.add(p);
-                    for(Player player : playerList) {
-                        if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                            playerList.remove(player);
-                            break;
+                    if(!isInList(inPlayPlayers, p)) {
+                        inPlayPlayers.add(p);
+                        for(Player player : playerList) {
+                            if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                                playerList.remove(player);
+                                break;
+                            }
+                        }
+                        generateImageViewForPlayer(p, p.getxPos(), p.getyPos());
+                        itemAdapter.notifyDataSetChanged();
+                    }
+                    else {
+                        //change coordinates
+                        for(ImageView iv : images) {
+                            Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap();
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            //image.recycle();
+                            byte[] byteArray = stream.toByteArray();
+                            String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                            if(imageFile.equals(p.getImage())) {
+                                iv.setX(p.getxPos());
+                                iv.setY(p.getyPos());
+                            }
                         }
                     }
-                    generateImageViewForPlayer(p, p.getxPos(), p.getyPos());
-                    itemAdapter.notifyDataSetChanged();
                 }
-                else if(!p.isInPlay()) {
+                else if(!p.isInPlay() && p.getxPos() == null && p.getyPos() == null) {
                     for(Player player : inPlayPlayers) {
+
                         if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+
+                            for(ImageView iv : images) {
+
+                                Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap();
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                //image.recycle();
+                                byte[] byteArray = stream.toByteArray();
+                                String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                                if(imageFile.equals(player.getImage())) {
+                                    field.removeView(iv);
+                                    images.remove(iv);
+                                    break;
+                                }
+                            }
+
                             inPlayPlayers.remove(player);
                             break;
                         }
@@ -126,7 +166,18 @@ public class PracticeFieldActivity extends AppCompatActivity {
         field.setOnDragListener(myDragEventListener);
     }
 
-    AdapterView.OnItemLongClickListener listItemClickListener = new AdapterView.OnItemLongClickListener(){
+    private boolean isInList(ArrayList<Player> list, Player p) {
+        boolean retVal = false;
+        for(Player player : list) {
+            if(player.getFirstName().equals(p.getFirstName()) && player.getLastName().equals(player.getLastName())) {
+                retVal = true;
+                break;
+            }
+        }
+        return retVal;
+    }
+
+    public AdapterView.OnItemLongClickListener listItemClickListener = new AdapterView.OnItemLongClickListener(){
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -135,13 +186,35 @@ public class PracticeFieldActivity extends AppCompatActivity {
             String text = tv.getText().toString();
             int index1 = text.indexOf(',');
             int index2 = text.indexOf('\n');
-            ClipData.Item item = new ClipData.Item(text.substring(index1 + 2, index2) +
+            ClipData.Item item = new ClipData.Item("UserName:" + text.substring(index1 + 2, index2) +
                     " " + text.substring(0, index1));
 
             String[] clipDescription = {ClipDescription.MIMETYPE_TEXT_PLAIN};
             ClipData dragData = new ClipData((CharSequence)view.getTag(), clipDescription,item);
             View.DragShadowBuilder myShadow = new MyDragShadowBuilder(view);
             view.startDrag(dragData, myShadow, null, 0);
+
+            return true;
+        }
+    };
+
+    public AdapterView.OnLongClickListener fieldItemClickListener = new AdapterView.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            ImageView iv = (ImageView) v;
+
+            Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            //image.recycle();
+            byte[] byteArray = stream.toByteArray();
+            String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+            ClipData.Item item = new ClipData.Item(imageFile);
+            String[] clipDescription = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+            ClipData dragData = new ClipData((CharSequence) v.getTag(), clipDescription, item);
+            View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
+            v.startDrag(dragData, myShadow, null, 0);
 
             return true;
         }
@@ -195,18 +268,46 @@ public class PracticeFieldActivity extends AppCompatActivity {
                     Log.d(TAG, "drop");
                     ClipData.Item item = event.getClipData().getItemAt(0);
 
-                    String droppedItem = item.getText().toString();
-                    int index = droppedItem.indexOf(" ");
-                    String firstName = droppedItem.substring(0, index);
-                    String lastName = droppedItem.substring(index + 1);
+                    if(item.getText().toString().contains("UserName:")) {
+                        String droppedItem = item.getText().toString();
+                        int index1 = droppedItem.indexOf(':');
+                        int index = droppedItem.indexOf(" ");
+                        String firstName = droppedItem.substring(index1 + 1, index);
+                        String lastName = droppedItem.substring(index + 1);
 
-                    Firebase player = ref.child("Player" + lastName + firstName).child("inPlay");
-                    player.setValue(true);
-                    player = ref.child("Player" + lastName + firstName).child("xPos");
-                    player.setValue(event.getX());
-                    player = ref.child("Player" + lastName + firstName).child("yPos");
-                    player.setValue(event.getY());
+                        Firebase player = ref.child("Player" + lastName + firstName).child("inPlay");
+                        player.setValue(true);
+                        player = ref.child("Player" + lastName + firstName).child("xPos");
+                        player.setValue(event.getX());
+                        player = ref.child("Player" + lastName + firstName).child("yPos");
+                        player.setValue(event.getY());
+                    }
+                    else {
+                        Player currentPlayer = null;
+                        for(Player p : inPlayPlayers) {
+                            String image = item.getText().toString();
+                            if(p.getImage().equals(image)) {
+                                currentPlayer = p;
+                            }
+                        }
 
+                        if(currentPlayer != null) {
+                            if(v == field) {
+                                Firebase player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("xPos");
+                                player.setValue(event.getX());
+                                player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("yPos");
+                                player.setValue(event.getY());
+                            }
+                            else if(v == players) {
+                                Firebase player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("inPlay");
+                                player.setValue(false);
+                                player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("xPos");
+                                player.setValue(null);
+                                player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("yPos");
+                                player.setValue(null);
+                            }
+                        }
+                    }
 
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -225,6 +326,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
         newImageView.setMaxWidth(90);
         newImageView.setX(x);
         newImageView.setY(y);
+        newImageView.setOnLongClickListener(fieldItemClickListener);
         byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
         Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
         newImageView.setImageBitmap(bMap);
@@ -237,7 +339,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
         player.setValue(y);
 
         field.addView(newImageView);
-
+        images.add(newImageView);
     }
 
     public class ItemAdapter extends ArrayAdapter<Player> {
