@@ -2,6 +2,7 @@ package com.example.sarah.soccermanagement;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.widget.Chronometer;
 
 import com.firebase.client.DataSnapshot;
 
@@ -25,6 +26,7 @@ public class Player {
     private Float xPos;
     private Float yPos;
     private boolean inPlay;
+    private String time;
 
     public Player(){}
 
@@ -42,6 +44,10 @@ public class Player {
         this.xPos = null;
         this.yPos = null;
         this.inPlay = inPlay;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public boolean isInPlay() {

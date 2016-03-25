@@ -12,7 +12,6 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -169,7 +168,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
     private boolean isInList(ArrayList<Player> list, Player p) {
         boolean retVal = false;
         for(Player player : list) {
-            if(player.getFirstName().equals(p.getFirstName()) && player.getLastName().equals(player.getLastName())) {
+            if(player.getFirstName().equals(p.getFirstName()) && player.getLastName().equals(p.getLastName())) {
                 retVal = true;
                 break;
             }
@@ -281,6 +280,12 @@ public class PracticeFieldActivity extends AppCompatActivity {
                         player.setValue(event.getX());
                         player = ref.child("Player" + lastName + firstName).child("yPos");
                         player.setValue(event.getY());
+                        try {
+                            Profiler.getInstance().start(firstName + lastName);
+                        }
+                        catch(ProfilerStartException e) {
+                            e.printStackTrace();
+                        }
                     }
                     else {
                         Player currentPlayer = null;
@@ -305,6 +310,13 @@ public class PracticeFieldActivity extends AppCompatActivity {
                                 player.setValue(null);
                                 player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("yPos");
                                 player.setValue(null);
+
+                                try {
+                                    Profiler.getInstance().stop(currentPlayer.getFirstName() + currentPlayer.getLastName());
+                                }
+                                catch(ProfilerEndException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -364,9 +376,21 @@ public class PracticeFieldActivity extends AppCompatActivity {
             if(p != null) {
                 ImageView iv = (ImageView) v.findViewById(R.id.playerImageView);
                 TextView tv = (TextView) v.findViewById(R.id.playerNameTextView);
+                TextView tv2 = (TextView) v.findViewById(R.id.timeOnField);
 
                 String name = p.getLastName() + ", " + p.getFirstName() + "\n" + p.getPosition();
                 tv.setText(name);
+                int milli = Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName());
+                int seconds = (milli / 1000) % 60;
+                int minutes = (milli / 1000) / 60;
+                String time;
+                if(seconds < 10) {
+                    time = String.valueOf(minutes) + ":0" + String.valueOf(seconds);
+                }
+                else {
+                    time = String.valueOf(minutes) + ":" + String.valueOf(seconds);
+                }
+                tv2.setText(time);
 
                 byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
                 Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
