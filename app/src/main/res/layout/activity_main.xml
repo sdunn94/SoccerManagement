@@ -24,23 +24,23 @@
         android:layout_height="wrap_content"
         android:text="@string/profile_button"
         android:id="@+id/profileButton"
-        android:layout_above="@+id/practiceButton"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/practice_button"
         android:id="@+id/practiceButton"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"/>
+        android:layout_toRightOf="@+id/profileButton"
+        android:layout_toEndOf="@+id/profileButton" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/hyperlinksButton"
         android:text="@string/hyper_link_button"
-        android:layout_below="@+id/practiceButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_toRightOf="@+id/practiceButton"
+        android:layout_toEndOf="@+id/practiceButton" />
 
 </RelativeLayout>

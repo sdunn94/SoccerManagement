@@ -18,7 +18,7 @@ android {
         }
     }
 
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META_INF/NOTICE'
@@ -30,6 +30,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.firebaseui:firebase-ui:0.3.1'
-    compile 'com.android.support:recyclerview-v7:+'
+    compile 'com.android.support:recyclerview-v7:23.2.0'
     compile 'com.android.support:percent:23.1.0'
+    compile 'com.android.support:design:23.2.0'
 }

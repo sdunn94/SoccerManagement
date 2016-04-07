@@ -21,7 +21,6 @@ import com.firebase.ui.FirebaseListAdapter;
 public class ProfileActivity extends AppCompatActivity {
 
     Button newProfileButton;
-    Button backToMenuButton;
     ListView players;
     private static final String TAG = "MyActivity";
     FirebaseListAdapter adapter;
@@ -32,12 +31,10 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_activity);
 
         newProfileButton = (Button) findViewById(R.id.newProfileButton);
-        backToMenuButton = (Button) findViewById(R.id.backToMenuButton);
         players = (ListView) findViewById(R.id.playersRecyclerView);
         players.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Log.d(TAG, "onClick " + ((TextView) view.findViewById(R.id.playerNameTextView)).getText().toString());
                 Intent intent = new Intent(ProfileActivity.this, NewProfileForm.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("name", ((TextView) view.findViewById(R.id.playerNameTextView)).getText().toString());
@@ -47,7 +44,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         newProfileButton.setOnClickListener(startNewProfile);
-        backToMenuButton.setOnClickListener(backToMenu);
 
         Firebase.setAndroidContext(this);
 
@@ -58,7 +54,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             protected void populateView(View view, Player player, int i) {
-                Log.d(TAG, "Loading profile");
                 String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();
                 ((TextView)view.findViewById(R.id.playerNameTextView)).setText(name);
                 byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
@@ -80,12 +75,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     };
 
-    public View.OnClickListener backToMenu = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-
-            startActivity(intent);
-        }
-    };
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/positionEditText"
             android:inputType="text"
-            android:hint="Position"
+            android:hint="@string/profile_position_hint"
             android:layout_below="@id/weightEditText"/>
 
         <EditText

@@ -2,7 +2,6 @@ package com.example.sarah.soccermanagement;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,24 +11,16 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.RemoteController;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.DragEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,34 +32,26 @@ import com.firebase.client.FirebaseError;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class PracticeFieldActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     Button startButton;
     Button stopButton;
     Button clearButton;
-    RadioGroup radioGroup;
-
     ListView players;
     RelativeLayout field;
     ItemAdapter itemAdapter;
-    ItemAdapter itemAdapter2;
-    ItemAdapter itemAdapter3;
-    ItemAdapter itemAdapter4;
 
     Firebase ref;
     private static final String TAG = "MyActivity";
     MyDragEventListener myDragEventListener = new MyDragEventListener();
-    ArrayList<Player> group1 = new ArrayList<>();
-    ArrayList<Player> group2 = new ArrayList<>();
-    ArrayList<Player> group3 = new ArrayList<>();
-    ArrayList<Player> group4 = new ArrayList<>();
+    ArrayList<Player> playerList = new ArrayList<>();
     ArrayList<Player> inPlayPlayers = new ArrayList<>();
     ArrayList<ImageView> images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practice_field);
+        setContentView(R.layout.activity_game);
 
         //ensures that the screen orientation is horizontal
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -78,28 +61,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
         startButton = (Button) findViewById(R.id.startButton);
         stopButton = (Button) findViewById(R.id.stopButton);
         clearButton = (Button) findViewById(R.id.clearButton);
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton button = (RadioButton) findViewById(checkedId);
-
-                if(button.getText().toString().equals("1")) {
-                    players.setAdapter(itemAdapter);
-                }
-                if(button.getText().toString().equals("2")) {
-                    players.setAdapter(itemAdapter2);
-                }
-                if(button.getText().toString().equals("3")) {
-                    players.setAdapter(itemAdapter3);
-                }
-                if(button.getText().toString().equals("4")) {
-                    players.setAdapter(itemAdapter4);
-                }
-
-            }
-        });
         startButton.setOnClickListener(startTimerListener);
         stopButton.setOnClickListener(stopTimerListener);
         clearButton.setOnClickListener(clearTimersListener);
@@ -118,19 +80,9 @@ public class PracticeFieldActivity extends AppCompatActivity {
                     generateImageViewForPlayer(p, p.getxPos(), p.getyPos());
                 }
                 else { //add the player to the all players list if they are not in play (on the field)
-                    if(p.getGroupNum() == 1)
-                        group1.add(p);
-                    else if(p.getGroupNum() == 2)
-                        group2.add(p);
-                    else if(p.getGroupNum() == 3)
-                        group3.add(p);
-                    else if(p.getGroupNum() == 4)
-                        group4.add(p);
+                    playerList.add(p);
                 }
                 itemAdapter.notifyDataSetChanged(); //activate the list adapter to update the on screen list view
-                itemAdapter2.notifyDataSetChanged();
-                itemAdapter3.notifyDataSetChanged();
-                itemAdapter4.notifyDataSetChanged();
             }
 
             @Override //this is called when any child is changed and the datasnapshot is the child that was changed
@@ -139,16 +91,14 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 if(p.isInPlay() && p.getxPos() != null && p.getyPos() != null) {  //if the player is in play and has a position
                     if(!isInList(inPlayPlayers, p)) { //if the player is not already on the field
                         inPlayPlayers.add(p);
-                        removeFromList(p);
+                        for(Player player : playerList) { //find the correct player to remove
+                            if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                                playerList.remove(player);
+                                break;
+                            }
+                        }
                         generateImageViewForPlayer(p, p.getxPos(), p.getyPos()); //generate image for player on field
-                        if(p.getGroupNum() == 1)
-                            itemAdapter.notifyDataSetChanged();
-                        if(p.getGroupNum() == 2)
-                            itemAdapter2.notifyDataSetChanged();
-                        if(p.getGroupNum() == 3)
-                            itemAdapter3.notifyDataSetChanged();
-                        if(p.getGroupNum() == 4)
-                            itemAdapter4.notifyDataSetChanged();
+                        itemAdapter.notifyDataSetChanged();
                     }
                     else {  //if the player is already on the field by moved to a new position
 
@@ -192,22 +142,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    if(p.getGroupNum() == 1) {
-                        group1.add(p);
-                        itemAdapter.notifyDataSetChanged();
-                    }
-                    else if(p.getGroupNum() == 2) {
-                        group2.add(p);
-                        itemAdapter2.notifyDataSetChanged();
-                    }
-                    else if(p.getGroupNum() == 3) {
-                        group3.add(p);
-                        itemAdapter3.notifyDataSetChanged();
-                    }
-                    else if(p.getGroupNum() == 4) {
-                        group4.add(p);
-                        itemAdapter4.notifyDataSetChanged();
-                    }
+                    playerList.add(p); //add player back to all players
+                    itemAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -229,10 +165,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
             }
         });
 
-        itemAdapter = new ItemAdapter(this, R.layout.player_profile_row_layout, group1);
-        itemAdapter2 = new ItemAdapter(this, R.layout.player_profile_row_layout, group2);
-        itemAdapter3 = new ItemAdapter(this, R.layout.player_profile_row_layout, group3);
-        itemAdapter4 = new ItemAdapter(this, R.layout.player_profile_row_layout, group4);
+        itemAdapter = new ItemAdapter(this, R.layout.player_profile_row_layout, playerList);
 
         players.setAdapter(itemAdapter);
         players.setOnItemLongClickListener(listItemClickListener);
@@ -249,41 +182,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
             }
         }
         return retVal;
-    }
-
-    private void removeFromList(Player p) {
-        if(p.getGroupNum() == 1) {
-            for (Player player : group1) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group1.remove(player);
-                    break;
-                }
-            }
-        }
-        if(p.getGroupNum() == 2) {
-            for (Player player : group2) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group2.remove(player);
-                    break;
-                }
-            }
-        }
-        if(p.getGroupNum() == 3) {
-            for (Player player : group3) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group3.remove(player);
-                    break;
-                }
-            }
-        }
-        if(p.getGroupNum() == 4) {
-            for (Player player : group4) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group4.remove(player);
-                    break;
-                }
-            }
-        }
     }
 
     public AdapterView.OnItemLongClickListener listItemClickListener = new AdapterView.OnItemLongClickListener(){ //listener for a long click on a list item
@@ -425,7 +323,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
     private void generateImageViewForPlayer(Player p, float x, float y) {
 
-        ImageView newImageView = new ImageView(PracticeFieldActivity.this);
+        ImageView newImageView = new ImageView(GameActivity.this);
         newImageView.setAdjustViewBounds(true);
         newImageView.setMaxHeight(90);
         newImageView.setMaxWidth(90);
@@ -485,25 +383,17 @@ public class PracticeFieldActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            for(Player p : group1) {
+            for(Player p : playerList) {
                 Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
-            }
-            for(Player p : group2) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
-            }
-            for(Player p : group3) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
-            }
-            for(Player p : group4) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                //Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                //r.setValue(0);
             }
             for(Player p : inPlayPlayers) {
                 Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                //Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                //r.setValue(0);
             }
             itemAdapter.notifyDataSetChanged();
-            itemAdapter2.notifyDataSetChanged();
-            itemAdapter3.notifyDataSetChanged();
-            itemAdapter4.notifyDataSetChanged();
         }
     };
 }

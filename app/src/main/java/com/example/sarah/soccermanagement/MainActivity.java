@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public View.OnClickListener goToPracticeField = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, PracticeFieldActivity.class);
+            Intent intent = new Intent(MainActivity.this, PracticeSetUpActivity.class);
 
             startActivity(intent);
         }

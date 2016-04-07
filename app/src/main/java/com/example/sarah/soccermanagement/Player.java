@@ -1,13 +1,5 @@
 package com.example.sarah.soccermanagement;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.widget.Chronometer;
-
-import com.firebase.client.DataSnapshot;
-
-import java.util.HashMap;
-
 /**
  * Created by Sarah on 3/7/2016.
  */
@@ -26,7 +18,8 @@ public class Player {
     private Float xPos;
     private Float yPos;
     private boolean inPlay;
-    private String time;
+    private int timeOnField;
+    private int groupNum;
 
     public Player(){}
 
@@ -44,10 +37,19 @@ public class Player {
         this.xPos = null;
         this.yPos = null;
         this.inPlay = inPlay;
+        groupNum = 0;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public int getGroupNum() {return groupNum;}
+
+    public void setGroupNum(int groupNum) {this.groupNum = groupNum;}
+
+    public void setTimeOnField(int timeOnField) {
+        this.timeOnField = timeOnField;
+    }
+
+    public int getTimeOnField() {
+        return timeOnField;
     }
 
     public boolean isInPlay() {

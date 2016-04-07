@@ -25,6 +25,8 @@
     <string name="link1">http://athletics.carthage.edu/roster.aspx?path=msoc</string>
     <string name="link2">http://www.insidesoccer.com/</string>
     <string name="upload_image_button">Upload Image</string>
+    <string name="profile_position_hint">Position</string>
+    <string name="back_to_menu_button">Back to Menu</string>
 
     <string-array name="years">
         <item>Freshman</item>
@@ -32,4 +34,6 @@
         <item>Junior</item>
         <item>Senior</item>
     </string-array>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_practice_set_up">PracticeSetUpActivity</string>
 </resources>

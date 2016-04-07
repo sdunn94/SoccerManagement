@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 
 public class NewProfileForm extends AppCompatActivity {
 
-    private Button submitButton;
+
     private EditText playerName;
     private EditText playerLName;
     private EditText playerHeightFeet;
@@ -32,10 +32,10 @@ public class NewProfileForm extends AppCompatActivity {
     private EditText playerHighSchool;
     private EditText playerClub;
     private Spinner playerYear;
-    private Button uploadImage;
+
     private ImageView uploadedImage;
     private static final int RESULT_LOAD_IMAGE = 1;
-    private Uri selectedImage;
+
 
     private Firebase ref;
 
@@ -43,6 +43,9 @@ public class NewProfileForm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_profile_form);
+
+        Button submitButton;
+        Button uploadImage;
 
         submitButton = (Button) findViewById(R.id.profileSubmitButton);
         playerName = (EditText) findViewById(R.id.profileNameEditText);
@@ -141,7 +144,7 @@ public class NewProfileForm extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            selectedImage = data.getData();
+            Uri selectedImage = data.getData();
             uploadedImage.setImageURI(selectedImage);
         }
     }

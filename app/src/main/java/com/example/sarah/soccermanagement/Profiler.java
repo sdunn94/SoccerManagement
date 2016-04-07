@@ -100,6 +100,13 @@ public class Profiler
         return totalDuration;
     }
 
+    public void clear(String timerName) {
+
+        if(timers.containsKey(timerName)) {
+            timers.get(timerName).clear();
+        }
+    }
+
     public void setEnabled(Boolean e)
     {
         isEnabled = e;
