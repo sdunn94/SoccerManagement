@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
     Button profileButton;
     Button practiceButton;
     Button hyperlinksButton;
+    Button gameButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +21,11 @@ public class MainActivity extends AppCompatActivity {
         profileButton = (Button) findViewById(R.id.profileButton);
         practiceButton = (Button) findViewById(R.id.practiceButton);
         hyperlinksButton = (Button) findViewById(R.id.hyperlinksButton);
+        gameButton = (Button) findViewById(R.id.gameButton);
         practiceButton.setOnClickListener(goToPracticeField);
         profileButton.setOnClickListener(goToProfileActivity);
         hyperlinksButton.setOnClickListener(goToHyperlinks);
+
 
     }
 

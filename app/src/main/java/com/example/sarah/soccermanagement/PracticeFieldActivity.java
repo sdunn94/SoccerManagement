@@ -374,18 +374,22 @@ public class PracticeFieldActivity extends AppCompatActivity {
                     ClipData.Item item = event.getClipData().getItemAt(0);
 
                     if(item.getText().toString().contains("UserName:")) {
-                        String droppedItem = item.getText().toString();
-                        int index1 = droppedItem.indexOf(':');
-                        int index = droppedItem.indexOf(" ");
-                        String firstName = droppedItem.substring(index1 + 1, index);
-                        String lastName = droppedItem.substring(index + 1);
 
-                        Firebase player = ref.child("Player" + lastName + firstName).child("inPlay");
-                        player.setValue(true);
-                        player = ref.child("Player" + lastName + firstName).child("xPos");
-                        player.setValue(event.getX());
-                        player = ref.child("Player" + lastName + firstName).child("yPos");
-                        player.setValue(event.getY());
+                        if(v != players) {
+
+                            String droppedItem = item.getText().toString();
+                            int index1 = droppedItem.indexOf(':');
+                            int index = droppedItem.indexOf(" ");
+                            String firstName = droppedItem.substring(index1 + 1, index);
+                            String lastName = droppedItem.substring(index + 1);
+
+                            Firebase player = ref.child("Player" + lastName + firstName).child("inPlay");
+                            player.setValue(true);
+                            player = ref.child("Player" + lastName + firstName).child("xPos");
+                            player.setValue(event.getX());
+                            player = ref.child("Player" + lastName + firstName).child("yPos");
+                            player.setValue(event.getY());
+                        }
                     }
                     else {
                         Player currentPlayer = null;
@@ -471,8 +475,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 try {
                     Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
-                    //Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-                    //r.setValue(Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName()));
                 }
                 catch(ProfilerEndException e) {
                     e.printStackTrace();
