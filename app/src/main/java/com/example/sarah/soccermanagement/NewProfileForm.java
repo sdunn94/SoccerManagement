@@ -74,13 +74,16 @@ public class NewProfileForm extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         if(bundle != null && !bundle.isEmpty()) {
             if(bundle.containsKey("name")) {
+
                 String n = bundle.getString("name");
                 int index = n.indexOf(',');
                 int endIndex = n.indexOf('\n');
                 String fname = n.substring(index + 2, endIndex);
                 String lname = n.substring(0, index);
                 for(int i = 0; i < PlayerLists.allPlayers.size(); i++) {
+
                     if(PlayerLists.allPlayers.get(i).getFirstName().equals(fname) && PlayerLists.allPlayers.get(i).getLastName().equals(lname)) {
+
                         playerName.setText(PlayerLists.allPlayers.get(i).getFirstName());
                         playerLName.setText(PlayerLists.allPlayers.get(i).getLastName());
                         int pos = 0;

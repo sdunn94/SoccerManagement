@@ -20,6 +20,7 @@ public class Player {
     private boolean inPlay;
     private int timeOnField;
     private int groupNum;
+    private boolean timerOn;
 
     public Player(){}
 
@@ -37,8 +38,14 @@ public class Player {
         this.xPos = null;
         this.yPos = null;
         this.inPlay = inPlay;
+        timeOnField = 0;
         groupNum = 0;
+        timerOn = false;
     }
+
+    public boolean isTimerOn() { return timerOn; }
+
+    public void setTimerOn(boolean timer) { timerOn = timer; }
 
     public int getGroupNum() {return groupNum;}
 

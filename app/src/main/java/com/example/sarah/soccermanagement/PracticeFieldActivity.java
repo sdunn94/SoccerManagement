@@ -2,7 +2,6 @@ package com.example.sarah.soccermanagement;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,18 +11,13 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.RemoteController;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.DragEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +31,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -56,7 +51,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
     ItemAdapter itemAdapter4;
 
     Firebase ref;
-    private static final String TAG = "MyActivity";
+    private static final String TAG = "ArrayLength: ";
     MyDragEventListener myDragEventListener = new MyDragEventListener();
     ArrayList<Player> group1 = new ArrayList<>();
     ArrayList<Player> group2 = new ArrayList<>();
@@ -133,8 +128,132 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 itemAdapter4.notifyDataSetChanged();
             }
 
-            @Override //this is called when any child is changed and the datasnapshot is the child that was changed
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            @Override //this is called when any child is changed and the data snapshot is the child that was changed
+            public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
+
+                dataSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot2, String s2) {
+                        if(dataSnapshot2.getKey().equals("timerOn")) {
+                            boolean isTimerOn = dataSnapshot2.getValue(Boolean.class);
+                            Player p = dataSnapshot.getValue(Player.class);
+                            if (isTimerOn) {
+                                try {
+                                    Profiler.getInstance().start(p.getFirstName() + p.getLastName());
+                                } catch (ProfilerStartException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                try {
+                                    Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
+                                    Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                                    r.setValue(Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName()));
+                                } catch (ProfilerEndException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        else if(dataSnapshot2.getKey().equals("timeOnField")) {
+                            int time = dataSnapshot2.getValue(Integer.class);
+                            Player p = dataSnapshot.getValue(Player.class);
+
+                            if(time == -1) {  //-1 flag for clear button click
+                                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                                Log.d(TAG, String.valueOf(group1.size()));
+                                if(isInList(group1, p)) {
+                                    itemAdapter.notifyDataSetChanged();
+                                }
+                                else if(isInList(group2, p)) {
+                                    itemAdapter2.notifyDataSetChanged();
+                                }
+                                else if(isInList(group3, p)) {
+                                    itemAdapter3.notifyDataSetChanged();
+                                }
+                                else if(isInList(group4, p)) {
+                                    itemAdapter4.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+//                dataSnapshot.getRef().child("timerOn").addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot2) {
+//                        boolean isTimerOn = dataSnapshot2.getValue(Boolean.class);
+//                        Player p = dataSnapshot.getValue(Player.class);
+//                        if (isTimerOn) {
+//                            try {
+//                                Profiler.getInstance().start(p.getFirstName() + p.getLastName());
+//                            } catch (ProfilerStartException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        else {
+//                            try {
+//                                Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
+//                                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+//                                r.setValue(Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName()));
+//                            } catch (ProfilerEndException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(FirebaseError firebaseError) {
+//
+//                    }
+//                });
+//
+//                dataSnapshot.getRef().child("timeOnField").addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot2) {
+//                        int time = dataSnapshot2.getValue(Integer.class);
+//                            Player p = dataSnapshot.getValue(Player.class);
+//                            if(time == -1) {  //-1 flag for clear button click
+//                                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+//                                if(isInList(group1, p)) {
+//                                    itemAdapter.notifyDataSetChanged();
+//                                }
+//                                else if(isInList(group2, p)) {
+//                                    itemAdapter2.notifyDataSetChanged();
+//                                }
+//                                else if(isInList(group3, p)) {
+//                                    itemAdapter3.notifyDataSetChanged();
+//                                }
+//                                else if(isInList(group4, p)) {
+//                                    itemAdapter4.notifyDataSetChanged();
+//                                }
+//                            }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(FirebaseError firebaseError) {
+//
+//                    }
+//                });
+
                 Player p = dataSnapshot.getValue(Player.class);
                 if(p.isInPlay() && p.getxPos() != null && p.getyPos() != null) {  //if the player is in play and has a position
                     if(!isInList(inPlayPlayers, p)) { //if the player is not already on the field
@@ -192,19 +311,19 @@ public class PracticeFieldActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    if(p.getGroupNum() == 1) {
+                    if(p.getGroupNum() == 1 && !isInList(group1, p)) {
                         group1.add(p);
                         itemAdapter.notifyDataSetChanged();
                     }
-                    else if(p.getGroupNum() == 2) {
+                    else if(p.getGroupNum() == 2 && !isInList(group2, p)) {
                         group2.add(p);
                         itemAdapter2.notifyDataSetChanged();
                     }
-                    else if(p.getGroupNum() == 3) {
+                    else if(p.getGroupNum() == 3 && !isInList(group3, p)) {
                         group3.add(p);
                         itemAdapter3.notifyDataSetChanged();
                     }
-                    else if(p.getGroupNum() == 4) {
+                    else if(p.getGroupNum() == 4 && !isInList(group4, p)) {
                         group4.add(p);
                         itemAdapter4.notifyDataSetChanged();
                     }
@@ -457,12 +576,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
             //go through all in-play players and start timers
             for (Player p : inPlayPlayers) {
 
-                try {
-                    Profiler.getInstance().start(p.getFirstName() + p.getLastName());
-                }
-                catch(ProfilerStartException e) {
-                    e.printStackTrace();
-                }
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
+                r.setValue(true);
             }
         }
     };
@@ -473,12 +588,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
             //go through all in-play players and stop timers
             for(Player p : inPlayPlayers) {
 
-                try {
-                    Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
-                }
-                catch(ProfilerEndException e) {
-                    e.printStackTrace();
-                }
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
+                r.setValue(false);
             }
         }
     };
@@ -488,24 +599,25 @@ public class PracticeFieldActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             for(Player p : group1) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                r.setValue(-1);
             }
             for(Player p : group2) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                r.setValue(-1);
             }
             for(Player p : group3) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                r.setValue(-1);
             }
             for(Player p : group4) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                r.setValue(-1);
             }
             for(Player p : inPlayPlayers) {
-                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+                r.setValue(-1);
             }
-            itemAdapter.notifyDataSetChanged();
-            itemAdapter2.notifyDataSetChanged();
-            itemAdapter3.notifyDataSetChanged();
-            itemAdapter4.notifyDataSetChanged();
         }
     };
 }
