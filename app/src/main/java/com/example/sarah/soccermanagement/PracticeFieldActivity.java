@@ -2,6 +2,7 @@ package com.example.sarah.soccermanagement;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -31,7 +33,6 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 if(button.getText().toString().equals("3")) {
                     players.setAdapter(itemAdapter3);
                 }
-                if(button.getText().toString().equals("4")) {
+                if(button.getText().toString().equals("GK/OUT")) {
                     players.setAdapter(itemAdapter4);
                 }
 
@@ -196,63 +197,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                     }
                 });
-
-//                dataSnapshot.getRef().child("timerOn").addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot2) {
-//                        boolean isTimerOn = dataSnapshot2.getValue(Boolean.class);
-//                        Player p = dataSnapshot.getValue(Player.class);
-//                        if (isTimerOn) {
-//                            try {
-//                                Profiler.getInstance().start(p.getFirstName() + p.getLastName());
-//                            } catch (ProfilerStartException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        else {
-//                            try {
-//                                Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
-//                                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-//                                r.setValue(Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName()));
-//                            } catch (ProfilerEndException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(FirebaseError firebaseError) {
-//
-//                    }
-//                });
-//
-//                dataSnapshot.getRef().child("timeOnField").addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot2) {
-//                        int time = dataSnapshot2.getValue(Integer.class);
-//                            Player p = dataSnapshot.getValue(Player.class);
-//                            if(time == -1) {  //-1 flag for clear button click
-//                                Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
-//                                if(isInList(group1, p)) {
-//                                    itemAdapter.notifyDataSetChanged();
-//                                }
-//                                else if(isInList(group2, p)) {
-//                                    itemAdapter2.notifyDataSetChanged();
-//                                }
-//                                else if(isInList(group3, p)) {
-//                                    itemAdapter3.notifyDataSetChanged();
-//                                }
-//                                else if(isInList(group4, p)) {
-//                                    itemAdapter4.notifyDataSetChanged();
-//                                }
-//                            }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(FirebaseError firebaseError) {
-//
-//                    }
-//                });
 
                 Player p = dataSnapshot.getValue(Player.class);
                 if(p.isInPlay() && p.getxPos() != null && p.getyPos() != null) {  //if the player is in play and has a position
@@ -435,7 +379,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
             Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            //image.recycle();
             byte[] byteArray = stream.toByteArray();
             String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
@@ -482,6 +425,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
             switch(action) {
                 case DragEvent.ACTION_DRAG_STARTED:
+                    Vibrator v1 = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    v1.vibrate(300);
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;
@@ -558,6 +503,10 @@ public class PracticeFieldActivity extends AppCompatActivity {
         byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
         Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
         newImageView.setImageBitmap(bMap);
+
+        //newImageView.setPadding(20, 20, 20, 20);
+        //newImageView.setCropToPadding(true);
+        newImageView.setBackgroundResource(R.drawable.image_border_red);
         p.setxPos(x);
         p.setyPos(y);
 
@@ -578,6 +527,18 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(true);
+
+                for(ImageView i : images) {
+                    Bitmap image = ((BitmapDrawable) i.getDrawable()).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                    if(p.getImage().equals(imageFile)) {
+                        i.setBackgroundResource(R.drawable.image_border_green);
+                    }
+                }
             }
         }
     };
@@ -590,6 +551,18 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(false);
+
+                for(ImageView i : images) {
+                    Bitmap image = ((BitmapDrawable) i.getDrawable()).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                    if(p.getImage().equals(imageFile)) {
+                        i.setBackgroundResource(R.drawable.image_border_red);
+                    }
+                }
             }
         }
     };

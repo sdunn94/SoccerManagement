@@ -1,7 +1,7 @@
 package com.example.sarah.soccermanagement;
 
 /**
- * Created by Sarah on 3/7/2016.
+ * Created by Sarah on 3/7/2016
  */
 public class Player {
     private String firstName;

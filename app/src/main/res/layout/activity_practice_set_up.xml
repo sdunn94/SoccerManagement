@@ -20,52 +20,106 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_widthPercent="35%"
-            app:layout_heightPercent="50%"
+            app:layout_heightPercent="48%"
             android:id="@+id/allPlayersListView"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true">
         </ListView>
 
+
+
         <ListView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_widthPercent="25%"
-            app:layout_heightPercent="50%"
+            app:layout_heightPercent="48%"
             android:id="@+id/groupOneListView"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true">
         </ListView>
 
+        <TextView
+            android:id="@+id/groupOneCountTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_widthPercent="25%"
+            app:layout_heightPercent="4%"
+            android:layout_above="@id/groupOneListView"
+            android:background="#a9b4ff"
+            android:textStyle="bold" />
+
+
         <ListView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_widthPercent="25%"
-            app:layout_heightPercent="50%"
+            app:layout_heightPercent="48%"
             android:id="@+id/groupTwoListView"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/groupOneListView">
+            android:layout_toRightOf="@id/groupOneListView"
+            android:layout_toEndOf="@id/groupOneListView">
         </ListView>
+
+        <TextView
+            android:id="@+id/groupTwoCountTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_widthPercent="25%"
+            app:layout_heightPercent="4%"
+            android:layout_above="@id/groupTwoListView"
+            android:layout_toEndOf="@id/groupOneCountTV"
+            android:layout_toRightOf="@id/groupOneCountTV"
+            android:background="#a9b4ff"
+            android:textStyle="bold" />
+
 
         <ListView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_widthPercent="25%"
-            app:layout_heightPercent="50%"
+            app:layout_heightPercent="48%"
             android:id="@+id/groupThreeListView"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/groupTwoListView">
+            android:layout_toRightOf="@id/groupTwoListView"
+            android:layout_toEndOf="@id/groupTwoListView">
         </ListView>
+
+        <TextView
+            android:id="@+id/groupThreeCountTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_widthPercent="25%"
+            app:layout_heightPercent="4%"
+            android:layout_above="@id/groupThreeListView"
+            android:layout_toEndOf="@id/groupTwoCountTV"
+            android:layout_toRightOf="@id/groupTwoCountTV"
+            android:background="#a9b4ff"
+            android:textStyle="bold" />
+
 
         <ListView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_widthPercent="25%"
-            app:layout_heightPercent="50%"
+            app:layout_heightPercent="48%"
             android:id="@+id/groupFourListView"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/groupThreeListView">
+            android:layout_toRightOf="@id/groupThreeListView"
+            android:layout_toEndOf="@id/groupThreeListView">
         </ListView>
+
+        <TextView
+            android:id="@+id/groupFourCountTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_widthPercent="25%"
+            app:layout_heightPercent="4%"
+            android:layout_above="@id/groupFourListView"
+            android:layout_toEndOf="@id/groupThreeCountTV"
+            android:layout_toRightOf="@id/groupThreeCountTV"
+            android:background="#a9b4ff"
+            android:textStyle="bold" />
 
     </android.support.percent.PercentRelativeLayout>
 
@@ -83,7 +137,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Practice"
+        android:text="Practice"
         android:id="@+id/startPracticeButton"
         android:layout_below="@+id/clearButton"
         android:layout_alignParentLeft="true"

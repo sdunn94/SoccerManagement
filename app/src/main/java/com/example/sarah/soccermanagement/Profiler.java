@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * Created by Sarah on 3/24/2016.
+ * Created by Sarah on 3/24/2016
  */
 public class Profiler
 {

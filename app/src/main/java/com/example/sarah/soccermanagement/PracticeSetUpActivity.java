@@ -34,6 +34,10 @@ public class PracticeSetUpActivity extends AppCompatActivity {
     ListView groupFourPlayers;
     Button clearButton;
     Button startPracticeButton;
+    TextView groupOneCount;
+    TextView groupTwoCount;
+    TextView groupThreeCount;
+    TextView groupFourCount;
 
     ArrayList<Player> players = new ArrayList<>();
     ArrayList<Player> group1 = new ArrayList<>();
@@ -66,6 +70,10 @@ public class PracticeSetUpActivity extends AppCompatActivity {
         groupFourPlayers = (ListView) findViewById(R.id.groupFourListView);
         clearButton = (Button) findViewById(R.id.clearButton);
         startPracticeButton = (Button) findViewById(R.id.startPracticeButton);
+        groupOneCount = (TextView) findViewById(R.id.groupOneCountTV);
+        groupTwoCount = (TextView) findViewById(R.id.groupTwoCountTV);
+        groupThreeCount = (TextView) findViewById(R.id.groupThreeCountTV);
+        groupFourCount = (TextView) findViewById(R.id.groupFourCountTV);
 
         clearButton.setOnClickListener(clearClickListener);
         startPracticeButton.setOnClickListener(startPracticeListener);
@@ -95,6 +103,11 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                     group4.add(p);
                     itemAdapter5.notifyDataSetChanged();
                 }
+
+                groupOneCount.setText(String.valueOf(group1.size()));
+                groupTwoCount.setText(String.valueOf(group2.size()));
+                groupThreeCount.setText(String.valueOf(group3.size()));
+                groupFourCount.setText(String.valueOf(group4.size()));
             }
 
             @Override
@@ -200,6 +213,10 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                         itemAdapter2.notifyDataSetChanged();
                     }
                 }
+                groupOneCount.setText(String.valueOf(group1.size()));
+                groupTwoCount.setText(String.valueOf(group2.size()));
+                groupThreeCount.setText(String.valueOf(group3.size()));
+                groupFourCount.setText(String.valueOf(group4.size()));
             }
 
             @Override
@@ -389,5 +406,11 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                     return false;
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(PracticeSetUpActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }

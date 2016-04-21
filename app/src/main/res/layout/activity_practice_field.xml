@@ -21,7 +21,7 @@
             app:layout_widthPercent="65%"
             android:id="@+id/imageView2"
             android:src="@drawable/field_small"
-            android:alpha="0.4"
+            android:alpha="0.7"
             android:scaleType="fitXY"/>
 
         <RadioGroup
@@ -54,7 +54,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="4"
+                android:text="GK/OUT"
                 android:id="@+id/groupFourRadioButton"/>
         </RadioGroup>
 
@@ -97,7 +97,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear All"
+        android:text="Clear Timers"
         android:id="@+id/clearButton"
         android:layout_alignBottom="@+id/stopButton"
         android:layout_toRightOf="@+id/stopButton"

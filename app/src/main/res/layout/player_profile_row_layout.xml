@@ -8,7 +8,7 @@
         android:id="@+id/playerImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/shieldc_small"/>
+        android:src="@drawable/shieldc_small" />
 
     <TextView
         android:id="@+id/playerNameTextView"
