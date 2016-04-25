@@ -2,12 +2,14 @@ package com.example.sarah.soccermanagement;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -366,6 +368,8 @@ public class PracticeSetUpActivity extends AppCompatActivity {
 
             switch(action) {
                 case DragEvent.ACTION_DRAG_STARTED:
+                    Vibrator v1 = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    v1.vibrate(300);
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;

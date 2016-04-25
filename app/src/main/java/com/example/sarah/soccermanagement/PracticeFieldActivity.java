@@ -504,8 +504,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
         Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
         newImageView.setImageBitmap(bMap);
 
-        //newImageView.setPadding(20, 20, 20, 20);
-        //newImageView.setCropToPadding(true);
         newImageView.setBackgroundResource(R.drawable.image_border_red);
         p.setxPos(x);
         p.setyPos(y);
