@@ -1,5 +1,7 @@
 package com.example.sarah.soccermanagement;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -113,25 +115,53 @@ public class NewProfileForm extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            Firebase newPlayer = ref.child("Player" + playerLName.getText().toString() + playerName.getText().toString());
-            int feet = Integer.parseInt(playerHeightFeet.getText().toString());
-            int inches = Integer.parseInt(playerHeightInches.getText().toString());
-            float weight = Float.parseFloat(playerWeight.getText().toString());
-            Player p = new Player(playerName.getText().toString(), playerLName.getText().toString(), playerYear.getSelectedItem().toString(), feet,
-                    inches, weight, playerPosition.getText().toString(), playerHometown.getText().toString(), playerHighSchool.getText().toString(),
-                    playerClub.getText().toString(), false);
-            Bitmap image = ((BitmapDrawable) uploadedImage.getDrawable()).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            image.recycle();
-            byte[] byteArray = stream.toByteArray();
-            String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            p.setImage(imageFile);
-            newPlayer.setValue(p);
+            if(playerLName.getText().toString().isEmpty() || playerName.getText().toString().isEmpty()){
+                //open message box
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewProfileForm.this);
+                builder.setMessage("You must have a first and last name!").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-            Intent intent = new Intent(NewProfileForm.this, ProfileActivity.class);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+            else {
+                Firebase newPlayer = ref.child("Player" + playerLName.getText().toString() + playerName.getText().toString());
+                int feet;
+                if(playerHeightFeet.getText().toString().isEmpty()) { feet = 0; }
+                else { feet = Integer.parseInt(playerHeightFeet.getText().toString()); }
 
-            startActivity(intent);
+                int inches;
+                if(playerHeightInches.getText().toString().isEmpty()) { inches = 0; }
+                else { inches = Integer.parseInt(playerHeightInches.getText().toString()); }
+
+                float weight;
+                if(playerWeight.getText().toString().isEmpty()) { weight = 0f; }
+                else { weight = Float.parseFloat(playerWeight.getText().toString()); }
+
+                Player p = new Player(playerName.getText().toString(), playerLName.getText().toString(), playerYear.getSelectedItem().toString(), feet,
+                        inches, weight, playerPosition.getText().toString(), playerHometown.getText().toString(), playerHighSchool.getText().toString(),
+                        playerClub.getText().toString(), false);
+
+                String imageFile;
+                if(uploadedImage.getDrawable() == null ) { imageFile = null; }
+                else {
+                    Bitmap image = ((BitmapDrawable) uploadedImage.getDrawable()).getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    image.recycle();
+                    byte[] byteArray = stream.toByteArray();
+                    imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                }
+                p.setImage(imageFile);
+                newPlayer.setValue(p);
+
+                Intent intent = new Intent(NewProfileForm.this, ProfileActivity.class);
+
+                startActivity(intent);
+            }
         }
     };
 

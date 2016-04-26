@@ -17,8 +17,10 @@
 
         <ImageView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:layout_widthPercent="65%"
+            app:layout_heightPercent="90%"
+            android:layout_alignParentBottom="true"
             android:id="@+id/imageView2"
             android:src="@drawable/field_small"
             android:alpha="0.7"
@@ -37,19 +39,19 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="1"
+                android:text="A"
                 android:id="@+id/groupOneRadioButton"
                 android:checked="true" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="2"
+                android:text="B"
                 android:id="@+id/groupTwoRadioButton"/>
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="3"
+                android:text="C"
                 android:id="@+id/groupThreeRadioButton"/>
             <RadioButton
                 android:layout_width="wrap_content"
@@ -102,6 +104,26 @@
         android:layout_alignBottom="@+id/stopButton"
         android:layout_toRightOf="@+id/stopButton"
         android:layout_toEndOf="@+id/stopButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonStyleSmall"
+        android:text="Clear Field"
+        android:id="@+id/clearFieldButton"
+        android:layout_alignBottom="@+id/clearButton"
+        android:layout_toRightOf="@+id/clearButton"
+        android:layout_toEndOf="@+id/clearButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonStyleSmall"
+        android:text="Clear All"
+        android:id="@+id/clearAllButton"
+        android:layout_alignBottom="@+id/clearFieldButton"
+        android:layout_toRightOf="@+id/clearFieldButton"
+        android:layout_toEndOf="@+id/clearFieldButton"/>
 
 
 </RelativeLayout>

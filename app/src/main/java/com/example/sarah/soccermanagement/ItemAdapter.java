@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Sarah on 4/7/2016.
+ * Created by Sarah on 4/7/2016
  */
 public class ItemAdapter extends ArrayAdapter<Player> {
 
@@ -54,9 +54,14 @@ public class ItemAdapter extends ArrayAdapter<Player> {
             }
             tv2.setText(time);
 
-            byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
-            Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
-            iv.setImageBitmap(bMap);
+            if(p.getImage() != null) {
+                byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
+                Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
+                iv.setImageBitmap(bMap);
+            }
+            else {
+                iv.setImageResource(R.drawable.shieldc_small);
+            }
         }
 
         return v;

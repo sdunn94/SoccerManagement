@@ -47,7 +47,8 @@
             app:layout_heightPercent="4%"
             android:layout_above="@id/groupOneListView"
             android:background="#a9b4ff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Group A: "/>
 
 
         <ListView
@@ -71,7 +72,8 @@
             android:layout_toEndOf="@id/groupOneCountTV"
             android:layout_toRightOf="@id/groupOneCountTV"
             android:background="#a9b4ff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Group B: "/>
 
 
         <ListView
@@ -95,7 +97,8 @@
             android:layout_toEndOf="@id/groupTwoCountTV"
             android:layout_toRightOf="@id/groupTwoCountTV"
             android:background="#a9b4ff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Group C: "/>
 
 
         <ListView
@@ -119,7 +122,8 @@
             android:layout_toEndOf="@id/groupThreeCountTV"
             android:layout_toRightOf="@id/groupThreeCountTV"
             android:background="#a9b4ff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Group GK/OUT: "/>
 
     </android.support.percent.PercentRelativeLayout>
 

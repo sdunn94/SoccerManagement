@@ -1,8 +1,11 @@
 package com.example.sarah.soccermanagement;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -42,6 +45,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
     Button startButton;
     Button stopButton;
     Button clearButton;
+    Button clearAllButton;
+    Button clearFieldButton;
     RadioGroup radioGroup;
 
     ListView players;
@@ -74,6 +79,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
         startButton = (Button) findViewById(R.id.startButton);
         stopButton = (Button) findViewById(R.id.stopButton);
         clearButton = (Button) findViewById(R.id.clearButton);
+        clearAllButton = (Button) findViewById(R.id.clearAllButton);
+        clearFieldButton = (Button) findViewById(R.id.clearFieldButton);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -81,13 +88,13 @@ public class PracticeFieldActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton button = (RadioButton) findViewById(checkedId);
 
-                if(button.getText().toString().equals("1")) {
+                if(button.getText().toString().equals("A")) {
                     players.setAdapter(itemAdapter);
                 }
-                if(button.getText().toString().equals("2")) {
+                if(button.getText().toString().equals("B")) {
                     players.setAdapter(itemAdapter2);
                 }
-                if(button.getText().toString().equals("3")) {
+                if(button.getText().toString().equals("C")) {
                     players.setAdapter(itemAdapter3);
                 }
                 if(button.getText().toString().equals("GK/OUT")) {
@@ -99,6 +106,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
         startButton.setOnClickListener(startTimerListener);
         stopButton.setOnClickListener(stopTimerListener);
         clearButton.setOnClickListener(clearTimersListener);
+        clearAllButton.setOnClickListener(clearAllListener);
+        clearFieldButton.setOnClickListener(clearFieldListener);
 
         Firebase.setAndroidContext(this);
 
@@ -569,26 +578,135 @@ public class PracticeFieldActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            for(Player p : group1) {
-                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-                r.setValue(-1);
-            }
-            for(Player p : group2) {
-                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-                r.setValue(-1);
-            }
-            for(Player p : group3) {
-                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-                r.setValue(-1);
-            }
-            for(Player p : group4) {
-                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-                r.setValue(-1);
-            }
-            for(Player p : inPlayPlayers) {
-                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
-                r.setValue(-1);
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
+            builder.setTitle("Confirm");
+            builder.setMessage("Are you sure you would like to clear all timers?").setCancelable(false);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    clearTimersForAllPlayers();
+                }
+            });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //do nothing!!!
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    };
+
+    void clearTimersForAllPlayers() {
+        for(Player p : group1) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+            r.setValue(-1);
+        }
+        for(Player p : group2) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+            r.setValue(-1);
+        }
+        for(Player p : group3) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+            r.setValue(-1);
+        }
+        for(Player p : group4) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+            r.setValue(-1);
+        }
+        for(Player p : inPlayPlayers) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
+            r.setValue(-1);
+        }
+    }
+
+    void clearInPlayPlayers() {
+        for(Player p : inPlayPlayers) {
+            Firebase player = ref.child("Player" + p.getLastName() + p.getFirstName()).child("inPlay");
+            player.setValue(false);
+            player = ref.child("Player" + p.getLastName() + p.getFirstName()).child("xPos");
+            player.setValue(null);
+            player = ref.child("Player" + p.getLastName() + p.getFirstName()).child("yPos");
+            player.setValue(null);
+        }
+    }
+
+    void resetAllGroupNums() {
+        for(Player p : group1) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("groupNum");
+            r.setValue(0);
+        }
+        for(Player p : group2) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("groupNum");
+            r.setValue(0);
+        }
+        for(Player p : group3) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("groupNum");
+            r.setValue(0);
+        }
+        for(Player p : group4) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("groupNum");
+            r.setValue(0);
+        }
+    }
+
+    public View.OnClickListener clearAllListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
+            builder.setTitle("Confirm");
+            builder.setMessage("Are you sure you would like to clear everything?").setCancelable(false);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //clear all timers
+                    clearTimersForAllPlayers();
+                    //in play back to false
+                    clearInPlayPlayers();
+                    //set all group nums to zero
+                    resetAllGroupNums();
+                    //return to sorting page
+                    Intent intent = new Intent(PracticeFieldActivity.this, PracticeSetUpActivity.class);
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Do nothing!!!
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    };
+
+    public View.OnClickListener clearFieldListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
+            builder.setTitle("Confirm");
+            builder.setMessage("Are you sure you would like to clear the field?").setCancelable(false);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //in play back to false
+                    clearInPlayPlayers();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Do nothing!!!
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     };
 }

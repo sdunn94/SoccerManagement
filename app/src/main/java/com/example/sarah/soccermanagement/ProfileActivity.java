@@ -56,9 +56,14 @@ public class ProfileActivity extends AppCompatActivity {
             protected void populateView(View view, Player player, int i) {
                 String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();
                 ((TextView)view.findViewById(R.id.playerNameTextView)).setText(name);
-                byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
-                Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
-                ((ImageView) view.findViewById(R.id.playerImageView)).setImageBitmap(bMap);
+                if(player.getImage() != null) {
+                    byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
+                    Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
+                    ((ImageView) view.findViewById(R.id.playerImageView)).setImageBitmap(bMap);
+                }
+                else {
+                    ((ImageView) view.findViewById(R.id.playerImageView)).setImageResource(R.drawable.shieldc_small);
+                }
                 PlayerLists.allPlayers.add(player);
             }
         };

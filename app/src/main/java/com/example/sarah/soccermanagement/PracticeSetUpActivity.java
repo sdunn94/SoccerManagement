@@ -106,10 +106,10 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                     itemAdapter5.notifyDataSetChanged();
                 }
 
-                groupOneCount.setText(String.valueOf(group1.size()));
-                groupTwoCount.setText(String.valueOf(group2.size()));
-                groupThreeCount.setText(String.valueOf(group3.size()));
-                groupFourCount.setText(String.valueOf(group4.size()));
+                groupOneCount.setText(String.valueOf("Group A:   " + group1.size()));
+                groupTwoCount.setText(String.valueOf("Group B:   " + group2.size()));
+                groupThreeCount.setText(String.valueOf("Group C:   " + group3.size()));
+                groupFourCount.setText(String.valueOf("Group GK/OUT:   " + group4.size()));
             }
 
             @Override
@@ -215,10 +215,10 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                         itemAdapter2.notifyDataSetChanged();
                     }
                 }
-                groupOneCount.setText(String.valueOf(group1.size()));
-                groupTwoCount.setText(String.valueOf(group2.size()));
-                groupThreeCount.setText(String.valueOf(group3.size()));
-                groupFourCount.setText(String.valueOf(group4.size()));
+                groupOneCount.setText(String.valueOf("Group A:   " + group1.size()));
+                groupTwoCount.setText(String.valueOf("Group B:   " + group2.size()));
+                groupThreeCount.setText(String.valueOf("Group C:   " + group3.size()));
+                groupFourCount.setText(String.valueOf("Group GK/OUT:   " + group4.size()));
             }
 
             @Override
