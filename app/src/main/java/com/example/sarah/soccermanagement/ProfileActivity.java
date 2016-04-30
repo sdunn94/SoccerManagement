@@ -21,6 +21,7 @@ import com.firebase.ui.FirebaseListAdapter;
 public class ProfileActivity extends AppCompatActivity {
 
     Button newProfileButton;
+    Button deleteProfileButton;
     ListView players;
     private static final String TAG = "MyActivity";
     FirebaseListAdapter adapter;
@@ -31,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_activity);
 
         newProfileButton = (Button) findViewById(R.id.newProfileButton);
+        deleteProfileButton = (Button) findViewById(R.id.deleteButton);
         players = (ListView) findViewById(R.id.playersRecyclerView);
         players.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -44,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         newProfileButton.setOnClickListener(startNewProfile);
+        deleteProfileButton.setOnClickListener(deleteProfile);
 
         Firebase.setAndroidContext(this);
 
@@ -85,4 +88,12 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
         startActivity(intent);
     }
+
+    public View.OnClickListener deleteProfile = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(ProfileActivity.this, DeletePlayer.class);
+            startActivity(intent);
+        }
+    };
 }
