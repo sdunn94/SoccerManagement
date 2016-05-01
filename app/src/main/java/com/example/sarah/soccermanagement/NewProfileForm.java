@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -145,8 +146,18 @@ public class NewProfileForm extends AppCompatActivity {
                         inches, weight, playerPosition.getText().toString(), playerHometown.getText().toString(), playerHighSchool.getText().toString(),
                         playerClub.getText().toString(), false);
 
-                String imageFile;
-                if(uploadedImage.getDrawable() == null ) { imageFile = null; }
+                String imageFile = "";
+                if(uploadedImage.getDrawable() == null ) {
+                    BitmapDrawable drawable = ((BitmapDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.shieldc_small, null));
+                    if(drawable != null) {
+                        Bitmap image = drawable.getBitmap();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        image.recycle();
+                        byte[] byteArray = stream.toByteArray();
+                        imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    }
+                }
                 else {
                     Bitmap image = ((BitmapDrawable) uploadedImage.getDrawable()).getBitmap();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();

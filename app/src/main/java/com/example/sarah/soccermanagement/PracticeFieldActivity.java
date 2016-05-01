@@ -366,13 +366,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
         public boolean onLongClick(View v) {
             ImageView iv = (ImageView) v;
 
-            Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-            ClipData.Item item = new ClipData.Item(imageFile);
+            ClipData.Item item = new ClipData.Item(iv.getTag().toString());
             String[] clipDescription = {ClipDescription.MIMETYPE_TEXT_PLAIN};
             ClipData dragData = new ClipData((CharSequence) v.getTag(), clipDescription, item);
             View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
@@ -427,9 +421,9 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DROP:
                     ClipData.Item item = event.getClipData().getItemAt(0);
 
-                    if(item.getText().toString().contains("UserName:")) {
+                    if(item.getText().toString().contains("UserName:")) { //moving player from list to field
 
-                        if(v != players) {
+                        if(v != players) { //execute as long as they are not dropped in the list, from the list
 
                             String droppedItem = item.getText().toString();
                             int index1 = droppedItem.indexOf(':');
@@ -445,29 +439,42 @@ public class PracticeFieldActivity extends AppCompatActivity {
                             player.setValue(event.getY());
                         }
                     }
-                    else {
+                    else { //either moving player to new position or back to list
                         Player currentPlayer = null;
                         for(Player p : inPlayPlayers) {
-                            String image = item.getText().toString();
-                            if(p.getImage().equals(image)) {
+                            String tag = item.getText().toString();
+                            if(String.valueOf(p.getFirstName() + p.getLastName()).equals(tag)) { //find correct player by tag on the image
                                 currentPlayer = p;
                             }
                         }
 
                         if(currentPlayer != null) {
-                            if(v == field) {
+                            if(v == field) { //moving around on the field
                                 Firebase player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("xPos");
                                 player.setValue(event.getX());
                                 player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("yPos");
                                 player.setValue(event.getY());
                             }
-                            else if(v == players) {
-                                Firebase player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("inPlay");
-                                player.setValue(false);
-                                player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("xPos");
-                                player.setValue(null);
-                                player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("yPos");
-                                player.setValue(null);
+                            else if(v == players) { //moving back to the list
+                                if(currentPlayer.isTimerOn()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
+                                    builder.setMessage("You must stop the timers first!").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
+                                else {
+                                    Firebase player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("inPlay");
+                                    player.setValue(false);
+                                    player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("xPos");
+                                    player.setValue(null);
+                                    player = ref.child("Player" + currentPlayer.getLastName() + currentPlayer.getFirstName()).child("yPos");
+                                    player.setValue(null);
+                                }
                             }
                         }
                     }
@@ -494,8 +501,12 @@ public class PracticeFieldActivity extends AppCompatActivity {
         Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
         newImageView.setImageBitmap(bMap);
         newImageView.setTag(p.getFirstName() + p.getLastName());
-
-        newImageView.setBackgroundResource(R.drawable.image_border_red);
+        if(p.isTimerOn()) {
+            newImageView.setBackgroundResource(R.drawable.image_border_green);
+        }
+        else {
+            newImageView.setBackgroundResource(R.drawable.image_border_red);
+        }
         p.setxPos(x);
         p.setyPos(y);
 
@@ -516,6 +527,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(true);
+                p.setTimerOn(true);
             }
         }
     };
@@ -528,6 +540,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(false);
+                p.setTimerOn(false);
             }
         }
     };
