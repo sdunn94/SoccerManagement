@@ -44,10 +44,46 @@
         android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/text4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/link2"
         android:layout_below="@+id/text3"
+        android:paddingTop="5dp"
+        android:autoLink="web"/>
+
+    <TextView
+        android:id="@+id/text5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Google Drive"
+        android:layout_below="@+id/text4"
+        android:paddingTop="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/text6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/link3"
+        android:layout_below="@+id/text5"
+        android:paddingTop="5dp"
+        android:autoLink="web"/>
+
+    <TextView
+        android:id="@+id/text7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Google Drive"
+        android:layout_below="@+id/text6"
+        android:paddingTop="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/link4"
+        android:layout_below="@+id/text7"
         android:paddingTop="5dp"
         android:autoLink="web"/>
 

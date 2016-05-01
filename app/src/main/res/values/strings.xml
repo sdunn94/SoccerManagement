@@ -24,6 +24,8 @@
     <string name="link2_title">Inside Soccer</string>
     <string name="link1">http://athletics.carthage.edu/roster.aspx?path=msoc</string>
     <string name="link2">http://www.insidesoccer.com/</string>
+    <string name="link3">https://accounts.google.com/ServiceLogin?service=wise&amp;passive=true&amp;continue=http%3A%2F%2Fdrive.google.com%2F%3Futm_source%3Den%26utm_medium%3Dbutton%26utm_campaign%3Dweb%26utm_content%3Dgotodrive%26usp%3Dgtd%26ltmpl%3Ddrive&amp;urp=https%3A%2F%2Fwww.google.com%2F#identifier</string>
+    <string name="link4">http://daximation.com/index.php</string>
     <string name="upload_image_button">Upload Image</string>
     <string name="profile_position_hint">Position</string>
     <string name="back_to_menu_button">Back to Menu</string>

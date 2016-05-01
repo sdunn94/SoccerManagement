@@ -104,6 +104,7 @@ public class Profiler
 
         if(timers.containsKey(timerName)) {
             timers.get(timerName).clear();
+            timers.remove(timerName);
         }
     }
 

@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -39,6 +40,10 @@ import com.firebase.client.FirebaseError;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class PracticeFieldActivity extends AppCompatActivity {
 
@@ -64,7 +69,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
     ArrayList<Player> group3 = new ArrayList<>();
     ArrayList<Player> group4 = new ArrayList<>();
     ArrayList<Player> inPlayPlayers = new ArrayList<>();
-    ArrayList<ImageView> images = new ArrayList<>();
+    HashMap<String, ImageView> imageViewMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +160,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
                             if (isTimerOn) {
                                 try {
                                     Profiler.getInstance().start(p.getFirstName() + p.getLastName());
+                                    imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_green);
                                 } catch (ProfilerStartException e) {
                                     e.printStackTrace();
                                 }
@@ -163,6 +169,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
                                     Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
                                     Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
                                     r.setValue(Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName()));
+                                    imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_red);
                                 } catch (ProfilerEndException e) {
                                     e.printStackTrace();
                                 }
@@ -208,35 +215,26 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 });
 
                 Player p = dataSnapshot.getValue(Player.class);
+
+                if(p.getGroupNum() == 0) {
+                    removeFromList(p);
+
+                    if(group1.isEmpty() && group2.isEmpty() && group3.isEmpty() && group4.isEmpty()) {
+                        Intent intent = new Intent(PracticeFieldActivity.this, PracticeSetUpActivity.class);
+                        startActivity(intent);
+                    }
+                }
+
                 if(p.isInPlay() && p.getxPos() != null && p.getyPos() != null) {  //if the player is in play and has a position
                     if(!isInList(inPlayPlayers, p)) { //if the player is not already on the field
                         inPlayPlayers.add(p);
                         removeFromList(p);
                         generateImageViewForPlayer(p, p.getxPos(), p.getyPos()); //generate image for player on field
-                        if(p.getGroupNum() == 1)
-                            itemAdapter.notifyDataSetChanged();
-                        if(p.getGroupNum() == 2)
-                            itemAdapter2.notifyDataSetChanged();
-                        if(p.getGroupNum() == 3)
-                            itemAdapter3.notifyDataSetChanged();
-                        if(p.getGroupNum() == 4)
-                            itemAdapter4.notifyDataSetChanged();
                     }
                     else {  //if the player is already on the field by moved to a new position
 
-                        for(ImageView iv : images) { //find the player with the corresponding image
-                            Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap(); //create bitmap from the drawable on the screen
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            image.compress(Bitmap.CompressFormat.PNG, 100, stream); //compress the bitmap
-                            //image.recycle();
-                            byte[] byteArray = stream.toByteArray(); //convert to a byte array
-                            String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT); //code the byte array into a string
-
-                            if(imageFile.equals(p.getImage())) { //changes the coordinates of the existing image
-                                iv.setX(p.getxPos());
-                                iv.setY(p.getyPos());
-                            }
-                        }
+                        imageViewMap.get(p.getFirstName() + p.getLastName()).setX(p.getxPos());
+                        imageViewMap.get(p.getFirstName() + p.getLastName()).setY(p.getyPos());
                     }
                 }
                 else if(!p.isInPlay() && p.getxPos() == null && p.getyPos() == null) { //if the player is moved from the field and to the list
@@ -244,21 +242,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                         if(p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
 
-                            for(ImageView iv : images) { //search for the correct image
-
-                                Bitmap image = ((BitmapDrawable) iv.getDrawable()).getBitmap();
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                //image.recycle();
-                                byte[] byteArray = stream.toByteArray();
-                                String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                                if(imageFile.equals(player.getImage())) { //remove the image from the field
-                                    field.removeView(iv);
-                                    images.remove(iv);
-                                    break;
-                                }
-                            }
+                            field.removeView(imageViewMap.get(player.getFirstName() + player.getLastName()));
+                            imageViewMap.remove(player.getFirstName() + player.getLastName());
 
                             inPlayPlayers.remove(player); //remove player form in play players
                             break;
@@ -324,36 +309,32 @@ public class PracticeFieldActivity extends AppCompatActivity {
     }
 
     private void removeFromList(Player p) {
-        if(p.getGroupNum() == 1) {
-            for (Player player : group1) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group1.remove(player);
-                    break;
-                }
+        for (Player player : group1) { //find the correct player to remove
+            if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                group1.remove(player);
+                itemAdapter.notifyDataSetChanged();
+                break;
             }
         }
-        if(p.getGroupNum() == 2) {
-            for (Player player : group2) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group2.remove(player);
-                    break;
-                }
+        for (Player player : group2) { //find the correct player to remove
+            if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                group2.remove(player);
+                itemAdapter2.notifyDataSetChanged();
+                break;
             }
         }
-        if(p.getGroupNum() == 3) {
-            for (Player player : group3) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group3.remove(player);
-                    break;
-                }
+        for (Player player : group3) { //find the correct player to remove
+            if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                group3.remove(player);
+                itemAdapter3.notifyDataSetChanged();
+                break;
             }
         }
-        if(p.getGroupNum() == 4) {
-            for (Player player : group4) { //find the correct player to remove
-                if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
-                    group4.remove(player);
-                    break;
-                }
+        for (Player player : group4) { //find the correct player to remove
+            if (p.getFirstName().equals(player.getFirstName()) && p.getLastName().equals(player.getLastName())) {
+                group4.remove(player);
+                itemAdapter4.notifyDataSetChanged();
+                break;
             }
         }
     }
@@ -512,6 +493,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
         byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
         Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
         newImageView.setImageBitmap(bMap);
+        newImageView.setTag(p.getFirstName() + p.getLastName());
 
         newImageView.setBackgroundResource(R.drawable.image_border_red);
         p.setxPos(x);
@@ -523,7 +505,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
         player.setValue(y);
 
         field.addView(newImageView);
-        images.add(newImageView);
+        imageViewMap.put(p.getFirstName() + p.getLastName(), newImageView);
     }
 
     public View.OnClickListener startTimerListener = new View.OnClickListener() {
@@ -534,18 +516,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(true);
-
-                for(ImageView i : images) {
-                    Bitmap image = ((BitmapDrawable) i.getDrawable()).getBitmap();
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                    if(p.getImage().equals(imageFile)) {
-                        i.setBackgroundResource(R.drawable.image_border_green);
-                    }
-                }
             }
         }
     };
@@ -558,18 +528,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(false);
-
-                for(ImageView i : images) {
-                    Bitmap image = ((BitmapDrawable) i.getDrawable()).getBitmap();
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    String imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                    if(p.getImage().equals(imageFile)) {
-                        i.setBackgroundResource(R.drawable.image_border_red);
-                    }
-                }
             }
         }
     };
@@ -648,6 +606,10 @@ public class PracticeFieldActivity extends AppCompatActivity {
             r.setValue(0);
         }
         for(Player p : group4) {
+            Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("groupNum");
+            r.setValue(0);
+        }
+        for(Player p : inPlayPlayers) {
             Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("groupNum");
             r.setValue(0);
         }
