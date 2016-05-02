@@ -181,7 +181,6 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
                             if(time == -1) {  //-1 flag for clear button click
                                 Profiler.getInstance().clear(p.getFirstName() + p.getLastName());
-                                Log.d(TAG, String.valueOf(group1.size()));
                                 if(isInList(group1, p)) {
                                     itemAdapter.notifyDataSetChanged();
                                 }
@@ -589,6 +588,11 @@ public class PracticeFieldActivity extends AppCompatActivity {
             r.setValue(-1);
         }
         for(Player p : inPlayPlayers) {
+            if(p.isTimerOn()) {
+                Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
+                r.setValue(false);
+                p.setTimerOn(false);
+            }
             Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
             r.setValue(-1);
         }
@@ -663,25 +667,40 @@ public class PracticeFieldActivity extends AppCompatActivity {
     public View.OnClickListener clearFieldListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
-            builder.setTitle("Confirm");
-            builder.setMessage("Are you sure you would like to clear the field?").setCancelable(false);
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //in play back to false
-                    clearInPlayPlayers();
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //Do nothing!!!
-                }
-            });
+            if (inPlayPlayers.size() > 0 && inPlayPlayers.get(0).isTimerOn()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
+                builder.setMessage("You must stop the timers first!!!").setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-            AlertDialog alert = builder.create();
-            alert.show();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
+                builder.setTitle("Confirm");
+                builder.setMessage("Are you sure you would like to clear the field?").setCancelable(false);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //in play back to false
+                        clearInPlayPlayers();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Do nothing!!!
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
         }
+
     };
 }

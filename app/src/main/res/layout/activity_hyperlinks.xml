@@ -74,7 +74,7 @@
         android:id="@+id/text7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Google Drive"
+        android:text="Wipe Board"
         android:layout_below="@+id/text6"
         android:paddingTop="20dp"
         android:textStyle="bold"/>

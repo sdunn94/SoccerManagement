@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -59,14 +60,9 @@ public class ProfileActivity extends AppCompatActivity {
             protected void populateView(View view, Player player, int i) {
                 String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();
                 ((TextView)view.findViewById(R.id.playerNameTextView)).setText(name);
-                if(player.getImage() != null) {
-                    byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
-                    Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
-                    ((ImageView) view.findViewById(R.id.playerImageView)).setImageBitmap(bMap);
-                }
-                else {
-                    ((ImageView) view.findViewById(R.id.playerImageView)).setImageResource(R.drawable.shieldc_small);
-                }
+                byte[] bArray = Base64.decode(player.getImage(), Base64.DEFAULT);
+                Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
+                ((ImageView) view.findViewById(R.id.playerImageView)).setImageBitmap(bMap);
                 PlayerLists.allPlayers.add(player);
             }
         };

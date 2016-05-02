@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
 //            else if(i >= 44 && i < 66) {
 //                p.setGroupNum(3);
 //            }
+//            else
+//            {
+//                p.setGroupNum(4);
+//            }
 //            p.setTimerOn(false);
 //            newP.setValue(p);
 //        }

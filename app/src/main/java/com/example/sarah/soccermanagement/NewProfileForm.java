@@ -71,8 +71,6 @@ public class NewProfileForm extends AppCompatActivity {
 
         ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
 
-
-
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if(bundle != null && !bundle.isEmpty()) {

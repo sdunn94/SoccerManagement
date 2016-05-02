@@ -54,14 +54,10 @@ public class ItemAdapter extends ArrayAdapter<Player> {
             }
             tv2.setText(time);
 
-            if(p.getImage() != null) {
-                byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
-                Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
-                iv.setImageBitmap(bMap);
-            }
-            else {
-                iv.setImageResource(R.drawable.shieldc_small);
-            }
+            byte[] bArray = Base64.decode(p.getImage(), Base64.DEFAULT);
+            Bitmap bMap = BitmapFactory.decodeByteArray(bArray, 0, bArray.length);
+            iv.setImageBitmap(bMap);
+
         }
 
         return v;
