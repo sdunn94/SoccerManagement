@@ -30,15 +30,15 @@ public class DeletePlayer extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        final Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        final Firebase ref = new Firebase("your test firebase account url goes here");
 
         players = (ListView) findViewById(R.id.playersRecyclerView);
-        players.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        players.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //listens for a click action on one of the list items
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 final TextView tv = (TextView) findViewById(R.id.playerNameTextView);
-
+                //ask user to confirm the delete
                 AlertDialog.Builder builder = new AlertDialog.Builder(DeletePlayer.this);
                 builder.setTitle("Confirm");
                 builder.setMessage("Are you sure you would like to delete " + tv.getText().toString() + "?").setCancelable(false);
@@ -72,6 +72,7 @@ public class DeletePlayer extends AppCompatActivity {
             }
         });
 
+        //list adapter that populates the list view directly from firebase
         adapter = new FirebaseListAdapter<Player>(this, Player.class, R.layout.player_profile_row_layout, ref) {
 
             @Override

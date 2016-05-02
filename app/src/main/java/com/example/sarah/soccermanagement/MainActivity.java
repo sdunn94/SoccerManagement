@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
         profileButton.setOnClickListener(goToProfileActivity);
         hyperlinksButton.setOnClickListener(goToHyperlinks);
 
-
+        //Loads 70 test players into firebase
 //        Firebase.setAndroidContext(this);
-//
-//        Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+
+//        Firebase ref = new Firebase("your test firebase account url goes here");
 //
 //        for(int i = 0; i < 70; i++) {
 //            Firebase newP = ref.child("Player" + String.valueOf(i) + String.valueOf(i));

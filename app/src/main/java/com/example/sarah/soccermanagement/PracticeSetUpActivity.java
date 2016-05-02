@@ -63,7 +63,7 @@ public class PracticeSetUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_practice_set_up);
 
         Firebase.setAndroidContext(this);
-        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        ref = new Firebase("your test firebase account url goes here");
 
         allPlayers = (ListView) findViewById(R.id.allPlayersListView);
         groupOnePlayers = (ListView) findViewById(R.id.groupOneListView);
@@ -80,9 +80,9 @@ public class PracticeSetUpActivity extends AppCompatActivity {
         clearButton.setOnClickListener(clearClickListener);
         startPracticeButton.setOnClickListener(startPracticeListener);
 
-        ref.addChildEventListener(new ChildEventListener() {
+        ref.addChildEventListener(new ChildEventListener() { //listens for any change in firebase
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) { //is called on page load, populates the lists based on player's group number
                 Player p = dataSnapshot.getValue(Player.class);
                 if(p.getGroupNum() == 0 && !isInList(players, p)) {
                     players.add(p);
@@ -112,9 +112,11 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                 groupFourCount.setText(String.valueOf("Group GK/OUT:   " + group4.size()));
             }
 
-            @Override
+            @Override //is called when any value in firebase if changed, dataSnapshot is the player that changed
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Player p = dataSnapshot.getValue(Player.class);
+                //determine what group they were added to
+                //then what group they came from, remove from that group
                 if(p.getGroupNum() == 0 && !isInList(players, p)) {
                     players.add(p);
                     itemAdapter1.notifyDataSetChanged();
@@ -215,6 +217,7 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                         itemAdapter2.notifyDataSetChanged();
                     }
                 }
+                //update labels that display the number of players in each list
                 groupOneCount.setText(String.valueOf("Group A:   " + group1.size()));
                 groupTwoCount.setText(String.valueOf("Group B:   " + group2.size()));
                 groupThreeCount.setText(String.valueOf("Group C:   " + group3.size()));
@@ -236,13 +239,14 @@ public class PracticeSetUpActivity extends AppCompatActivity {
 
             }
         });
-
+        //sets up the adapters for all 5 lists
         itemAdapter1 = new ItemAdapter(this, R.layout.player_profile_row_layout, players);
         itemAdapter2 = new ItemAdapter(this, R.layout.player_profile_row_layout, group1);
         itemAdapter3 = new ItemAdapter(this, R.layout.player_profile_row_layout, group2);
         itemAdapter4 = new ItemAdapter(this, R.layout.player_profile_row_layout, group3);
         itemAdapter5 = new ItemAdapter(this, R.layout.player_profile_row_layout, group4);
 
+        //makes sure that you can drag and drop from any list into any other list
         allPlayers.setAdapter(itemAdapter1);
         allPlayers.setOnItemLongClickListener(listItemClickListener);
         allPlayers.setOnDragListener(myDragEventListener);
@@ -285,7 +289,7 @@ public class PracticeSetUpActivity extends AppCompatActivity {
     }
 
     public View.OnClickListener clearClickListener = new View.OnClickListener() {
-        @Override
+        @Override //resest all players back to group 0 (the master list)
         public void onClick(View v) {
 
             for(Player p : group1) {
@@ -317,7 +321,7 @@ public class PracticeSetUpActivity extends AppCompatActivity {
     };
 
     public AdapterView.OnItemLongClickListener listItemClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
+        @Override //listens for a long press on an item in a list
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             LinearLayout linearLayoutParent = (LinearLayout) view;
             TextView tv = (TextView) linearLayoutParent.getChildAt(1);
@@ -386,7 +390,7 @@ public class PracticeSetUpActivity extends AppCompatActivity {
                     String lastName = droppedItem.substring(index + 1);
 
                     Firebase player = ref.child("Player" + lastName + firstName).child("groupNum");
-
+                    //reset the group number to what ever group they were dropped into
                     if(v == allPlayers) {
                         player.setValue(0);
                     }

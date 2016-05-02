@@ -36,7 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
         deleteProfileButton = (Button) findViewById(R.id.deleteButton);
         players = (ListView) findViewById(R.id.playersRecyclerView);
         players.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
+            @Override //listens for a click on any list item, sends the name of the player clicked along with starting the new profile activity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ProfileActivity.this, NewProfileForm.class);
                 Bundle bundle = new Bundle();
@@ -51,11 +51,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        Firebase ref = new Firebase("your test firebase account url goes here");
         PlayerLists.allPlayers.clear();
 
         adapter = new FirebaseListAdapter<Player>(this, Player.class, R.layout.player_profile_row_layout, ref) {
-
+            //populates the list view from firebase
             @Override
             protected void populateView(View view, Player player, int i) {
                 String name = player.getLastName() + ", " + player.getFirstName() + "\n" + player.getPosition();

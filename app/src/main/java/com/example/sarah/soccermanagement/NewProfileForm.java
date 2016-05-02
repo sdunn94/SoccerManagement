@@ -69,19 +69,21 @@ public class NewProfileForm extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        ref = new Firebase("your test firebase account url goes here");
 
+        //unpackage the bundle sent from the Profile activity and if it contains data, fill the fields on the screen
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if(bundle != null && !bundle.isEmpty()) {
             if(bundle.containsKey("name")) {
 
+                //extract the players name from the data
                 String n = bundle.getString("name");
                 int index = n.indexOf(',');
                 int endIndex = n.indexOf('\n');
                 String fname = n.substring(index + 2, endIndex);
                 String lname = n.substring(0, index);
-                for(int i = 0; i < PlayerLists.allPlayers.size(); i++) {
+                for(int i = 0; i < PlayerLists.allPlayers.size(); i++) { //find the correct player and use his data to populate the fields
 
                     if(PlayerLists.allPlayers.get(i).getFirstName().equals(fname) && PlayerLists.allPlayers.get(i).getLastName().equals(lname)) {
 
@@ -114,6 +116,7 @@ public class NewProfileForm extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+            //if no first name or last name is given don't let them submit the new profile
             if(playerLName.getText().toString().isEmpty() || playerName.getText().toString().isEmpty()){
                 //open message box
                 AlertDialog.Builder builder = new AlertDialog.Builder(NewProfileForm.this);
@@ -126,7 +129,7 @@ public class NewProfileForm extends AppCompatActivity {
                 AlertDialog alert = builder.create();
                 alert.show();
             }
-            else {
+            else { //create or overwrite the new player with all the info gathered from the edit text fields
                 Firebase newPlayer = ref.child("Player" + playerLName.getText().toString() + playerName.getText().toString());
                 int feet;
                 if(playerHeightFeet.getText().toString().isEmpty()) { feet = 0; }
@@ -166,7 +169,7 @@ public class NewProfileForm extends AppCompatActivity {
                 }
                 p.setImage(imageFile);
                 newPlayer.setValue(p);
-
+                //go back to profiles
                 Intent intent = new Intent(NewProfileForm.this, ProfileActivity.class);
 
                 startActivity(intent);

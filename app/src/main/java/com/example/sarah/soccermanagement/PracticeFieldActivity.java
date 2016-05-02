@@ -88,11 +88,11 @@ public class PracticeFieldActivity extends AppCompatActivity {
         clearFieldButton = (Button) findViewById(R.id.clearFieldButton);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {  //listens for changes in the radio button selection
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton button = (RadioButton) findViewById(checkedId);
-
+                //displays the list that corresponds with the selected radio button
                 if(button.getText().toString().equals("A")) {
                     players.setAdapter(itemAdapter);
                 }
@@ -116,7 +116,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        ref = new Firebase("your test firebase account url goes here");
 
         ref.addChildEventListener(new ChildEventListener() {
 
@@ -248,6 +248,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
                             break;
                         }
                     }
+                    //determine which list they were added to, and notify the correct adapter
                     if(p.getGroupNum() == 1 && !isInList(group1, p)) {
                         group1.add(p);
                         itemAdapter.notifyDataSetChanged();
@@ -588,7 +589,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
             r.setValue(-1);
         }
         for(Player p : inPlayPlayers) {
-            if(p.isTimerOn()) {
+            if(p.isTimerOn()) { //if timer is still on, stop it before clearing it
                 Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timerOn");
                 r.setValue(false);
                 p.setTimerOn(false);
@@ -667,6 +668,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
     public View.OnClickListener clearFieldListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            //if the timers are still running don't let them clear the field
             if (inPlayPlayers.size() > 0 && inPlayPlayers.get(0).isTimerOn()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
                 builder.setMessage("You must stop the timers first!!!").setCancelable(false);
@@ -679,7 +681,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 AlertDialog alert = builder.create();
                 alert.show();
             }
-            else {
+            else { //ask for confirmation before clearing
                 AlertDialog.Builder builder = new AlertDialog.Builder(PracticeFieldActivity.this);
                 builder.setTitle("Confirm");
                 builder.setMessage("Are you sure you would like to clear the field?").setCancelable(false);
@@ -701,6 +703,5 @@ public class PracticeFieldActivity extends AppCompatActivity {
                 alert.show();
             }
         }
-
     };
 }
