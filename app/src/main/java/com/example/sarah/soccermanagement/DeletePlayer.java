@@ -30,23 +30,23 @@ public class DeletePlayer extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        final Firebase ref = new Firebase("your test firebase account url goes here");
+        final Firebase ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
 
-        players = (ListView) findViewById(R.id.playersRecyclerView);
+        players = (ListView) findViewById(R.id.playersListView);
         players.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //listens for a click action on one of the list items
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                final TextView tv = (TextView) findViewById(R.id.playerNameTextView);
+                final View v = view;
                 //ask user to confirm the delete
                 AlertDialog.Builder builder = new AlertDialog.Builder(DeletePlayer.this);
                 builder.setTitle("Confirm");
-                builder.setMessage("Are you sure you would like to delete " + tv.getText().toString() + "?").setCancelable(false);
+                builder.setMessage("Are you sure you would like to delete " + ((TextView) view.findViewById(R.id.playerNameTextView)).getText().toString() + "?").setCancelable(false);
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //delete from firebase
-                        String name = tv.getText().toString();
+                        String name = ((TextView) v.findViewById(R.id.playerNameTextView)).getText().toString();
                         int index = name.indexOf(' ');
                         int index2 = name.indexOf('\n');
                         String firstName = name.substring(0, index - 1);

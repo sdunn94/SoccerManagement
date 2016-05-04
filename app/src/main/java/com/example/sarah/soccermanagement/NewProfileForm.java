@@ -35,6 +35,7 @@ public class NewProfileForm extends AppCompatActivity {
     private EditText playerHighSchool;
     private EditText playerClub;
     private Spinner playerYear;
+    private Player player;
 
     private ImageView uploadedImage;
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -69,7 +70,7 @@ public class NewProfileForm extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("your test firebase account url goes here");
+        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
 
         //unpackage the bundle sent from the Profile activity and if it contains data, fill the fields on the screen
         Intent intent = getIntent();
@@ -86,7 +87,7 @@ public class NewProfileForm extends AppCompatActivity {
                 for(int i = 0; i < PlayerLists.allPlayers.size(); i++) { //find the correct player and use his data to populate the fields
 
                     if(PlayerLists.allPlayers.get(i).getFirstName().equals(fname) && PlayerLists.allPlayers.get(i).getLastName().equals(lname)) {
-
+                        player = PlayerLists.allPlayers.get(i);
                         playerName.setText(PlayerLists.allPlayers.get(i).getFirstName());
                         playerLName.setText(PlayerLists.allPlayers.get(i).getLastName());
                         int pos = 0;
@@ -168,6 +169,9 @@ public class NewProfileForm extends AppCompatActivity {
                     imageFile = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 }
                 p.setImage(imageFile);
+                if(player != null) {
+                    p.setGroupNum(player.getGroupNum());
+                }
                 newPlayer.setValue(p);
                 //go back to profiles
                 Intent intent = new Intent(NewProfileForm.this, ProfileActivity.class);

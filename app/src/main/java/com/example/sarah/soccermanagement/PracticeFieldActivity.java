@@ -116,7 +116,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("your test firebase account url goes here");
+        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
 
         ref.addChildEventListener(new ChildEventListener() {
 
