@@ -70,7 +70,7 @@ public class NewProfileForm extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        ref = new Firebase("your test firebase account url goes here");
 
         //unpackage the bundle sent from the Profile activity and if it contains data, fill the fields on the screen
         Intent intent = getIntent();

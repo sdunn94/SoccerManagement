@@ -63,7 +63,7 @@ public class PracticeSetUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_practice_set_up);
 
         Firebase.setAndroidContext(this);
-        ref = new Firebase("https://soccer-management.firebaseio.com/Profiles");
+        ref = new Firebase("your test firebase account url goes here");
 
         allPlayers = (ListView) findViewById(R.id.allPlayersListView);
         groupOnePlayers = (ListView) findViewById(R.id.groupOneListView);
