@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         //Loads 70 test players into firebase
 //        Firebase.setAndroidContext(this);
 
-//        Firebase ref = new Firebase("your test firebase account url goes here");
+//        Firebase ref = new Firebase(getString(R.string.FirebaseURL));
 //
 //        for(int i = 0; i < 70; i++) {
 //            Firebase newP = ref.child("Player" + String.valueOf(i) + String.valueOf(i));

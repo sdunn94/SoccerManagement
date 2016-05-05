@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.sarah.soccermanagement.HyperlinksActivity">
+    tools:context="com.example.sarah.soccermanagement.HyperlinksActivity"
+    android:clickable="true">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -23,68 +24,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/link1_title"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/text2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/link1"
-        android:layout_below="@+id/text"
-        android:paddingTop="5dp"
-        android:autoLink="web"/>
+        android:textStyle="bold"
+        android:clickable="true"
+        android:textColor="#0106ff" />
 
     <TextView
         android:id="@+id/text3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/link2_title"
-        android:layout_below="@+id/text2"
+        android:layout_below="@+id/text"
         android:paddingTop="20dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/text4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/link2"
-        android:layout_below="@+id/text3"
-        android:paddingTop="5dp"
-        android:autoLink="web"/>
+        android:textStyle="bold"
+        android:clickable="true"
+        android:textColor="#0106ff" />
 
     <TextView
         android:id="@+id/text5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Google Drive"
-        android:layout_below="@+id/text4"
+        android:layout_below="@+id/text3"
         android:paddingTop="20dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/text6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/link3"
-        android:layout_below="@+id/text5"
-        android:paddingTop="5dp"
-        android:autoLink="web"/>
-
-    <TextView
-        android:id="@+id/text7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wipe Board"
-        android:layout_below="@+id/text6"
-        android:paddingTop="20dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/link4"
-        android:layout_below="@+id/text7"
-        android:paddingTop="5dp"
-        android:autoLink="web"/>
+        android:textStyle="bold"
+        android:clickable="true"
+        android:textColor="#0106ff" />
 
 </RelativeLayout>

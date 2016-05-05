@@ -70,7 +70,7 @@ public class NewProfileForm extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("your test firebase account url goes here");
+        ref = new Firebase(getString(R.string.FirebaseURL));
 
         //unpackage the bundle sent from the Profile activity and if it contains data, fill the fields on the screen
         Intent intent = getIntent();
@@ -94,6 +94,7 @@ public class NewProfileForm extends AppCompatActivity {
                         if(PlayerLists.allPlayers.get(i).getYear().equals("Sophomore")) { pos = 1; }
                         else if(PlayerLists.allPlayers.get(i).getYear().equals("Junior")) { pos = 2; }
                         else if(PlayerLists.allPlayers.get(i).getYear().equals("Senior")) { pos = 3; }
+                        else if(PlayerLists.allPlayers.get(i).getYear().equals("Other")) { pos = 4; }
                         playerYear.setSelection(pos);
                         playerHeightFeet.setText(String.format("%d", PlayerLists.allPlayers.get(i).getHeightFeet()));
                         playerHeightInches.setText(String.format("%d", PlayerLists.allPlayers.get(i).getHeightInches()));

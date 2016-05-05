@@ -30,7 +30,7 @@ public class DeletePlayer extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        final Firebase ref = new Firebase("your test firebase account url goes here");
+        final Firebase ref = new Firebase(getString(R.string.FirebaseURL));
 
         players = (ListView) findViewById(R.id.playersListView);
         players.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //listens for a click action on one of the list items

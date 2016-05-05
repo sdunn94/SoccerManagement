@@ -116,7 +116,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("your test firebase account url goes here");
+        ref = new Firebase(getString(R.string.FirebaseURL));
 
         ref.addChildEventListener(new ChildEventListener() {
 
