@@ -1,5 +1,5 @@
 <resources>
-    <string name="FirebaseURL">https://soccer-management.firebaseio.com/Profiles</string>
+    <string name="FirebaseURL">your firebase url goes here!!!!</string>
     <string name="app_name">Soccer Management</string>
     <string name="profile_button">Profiles</string>
     <string name="practice_button">Practice</string>

@@ -12,15 +12,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,12 +35,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class PracticeFieldActivity extends AppCompatActivity {
 
@@ -123,7 +116,7 @@ public class PracticeFieldActivity extends AppCompatActivity {
             @Override //this is called when screen is first generated and anytime a new child is added
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player p = dataSnapshot.getValue(Player.class); //converts datasnapshot to a player
-                if(p.isInPlay()) { //add player to in play list and generate image if player is in play
+                if(p.isInPlay() && p.getGroupNum() != 0) { //add player to in play list and generate image if player is in play
                     inPlayPlayers.add(p);
                     generateImageViewForPlayer(p, p.getxPos(), p.getyPos());
                 }
@@ -160,7 +153,14 @@ public class PracticeFieldActivity extends AppCompatActivity {
                             if (isTimerOn) {
                                 try {
                                     Profiler.getInstance().start(p.getFirstName() + p.getLastName());
-                                    imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_green);
+                                    if(p.getGroupNum() == 1)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_yellow);
+                                    if(p.getGroupNum() == 2)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_purple);
+                                    if(p.getGroupNum() == 3)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_grey);
+                                    if(p.getGroupNum() == 4)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_orange);
                                 } catch (ProfilerStartException e) {
                                     e.printStackTrace();
                                 }
@@ -169,7 +169,14 @@ public class PracticeFieldActivity extends AppCompatActivity {
                                     Profiler.getInstance().stop(p.getFirstName() + p.getLastName());
                                     Firebase r = ref.child("Player" + p.getLastName() + p.getFirstName()).child("timeOnField");
                                     r.setValue(Profiler.getInstance().getDuration(p.getFirstName() + p.getLastName()));
-                                    imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_red);
+                                    if(p.getGroupNum() == 1)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_red);
+                                    if(p.getGroupNum() == 2)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_black);
+                                    if(p.getGroupNum() == 3)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_white);
+                                    if(p.getGroupNum() == 4)
+                                        imageViewMap.get(p.getFirstName() + p.getLastName()).setBackgroundResource(R.drawable.image_border_blue);
                                 } catch (ProfilerEndException e) {
                                     e.printStackTrace();
                                 }
@@ -307,6 +314,8 @@ public class PracticeFieldActivity extends AppCompatActivity {
         }
         return retVal;
     }
+
+
 
     private void removeFromList(Player p) {
         for (Player player : group1) { //find the correct player to remove
@@ -502,10 +511,24 @@ public class PracticeFieldActivity extends AppCompatActivity {
         newImageView.setImageBitmap(bMap);
         newImageView.setTag(p.getFirstName() + p.getLastName());
         if(p.isTimerOn()) {
-            newImageView.setBackgroundResource(R.drawable.image_border_green);
+            if(p.getGroupNum() == 1)
+                newImageView.setBackgroundResource(R.drawable.image_border_yellow);
+            if(p.getGroupNum() == 2)
+                newImageView.setBackgroundResource(R.drawable.image_border_purple);
+            if(p.getGroupNum() == 3)
+                newImageView.setBackgroundResource(R.drawable.image_border_grey);
+            if(p.getGroupNum() == 4)
+                newImageView.setBackgroundResource(R.drawable.image_border_orange);
         }
         else {
-            newImageView.setBackgroundResource(R.drawable.image_border_red);
+            if(p.getGroupNum() == 1)
+                newImageView.setBackgroundResource(R.drawable.image_border_red);
+            if(p.getGroupNum() == 2)
+                newImageView.setBackgroundResource(R.drawable.image_border_black);
+            if(p.getGroupNum() == 3)
+                newImageView.setBackgroundResource(R.drawable.image_border_white);
+            if(p.getGroupNum() == 4)
+                newImageView.setBackgroundResource(R.drawable.image_border_blue);
         }
         p.setxPos(x);
         p.setyPos(y);
